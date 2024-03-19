@@ -1,2 +1,2 @@
-# DS50_Graph_Clustering
-Academic Project: Clusterization on graph-structured data
+# DS50 - Graph Clustering
+Clusterization on graph-structured data
