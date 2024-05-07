@@ -111,7 +111,7 @@ def plot_3d_clustering_comparison(z: np.ndarray, true_labels: np.ndarray, cluste
 	fig = plt.figure(figsize=(15, 5))
 
 	plot_3d(z_embedded, true_labels, "True labels", fig, 1, 3)
-	plot_3d(z_embedded, cluster_labels, "Clusters labels", fig, 2, 3)
+	plot_3d(z_embedded, cluster_labels, "Cluster labels", fig, 2, 3)
 
 	plt.tight_layout()
 	plt.show()
