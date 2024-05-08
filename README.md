@@ -8,7 +8,6 @@ This project focuses on the study and implementation of various graph clustering
 - [Installation](#installation)
 - [Usage](#usage)
 - [Implemented Techniques](#implemented-techniques)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
