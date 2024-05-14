@@ -1,8 +1,7 @@
 def main():
+	"""Main function
 	"""
-	Main function
-	"""
-	print("Graph Clustering Project")
+	print("Graph Clustering")
 
 
 if __name__ == "__main__":
