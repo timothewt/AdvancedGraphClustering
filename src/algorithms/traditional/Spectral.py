@@ -10,7 +10,7 @@ class Spectral(Algorithm):
 
 	:param graph: Graph object
 	:type graph: Graph
-	:param num_clusters: Number of clusters to form
+	:param num_clusters: Maximum number of clusters to form
 	:type num_clusters: int
 	"""
 
@@ -23,7 +23,7 @@ class Spectral(Algorithm):
 	def run(self) -> None:
 		"""Runs the algorithm
 
-		:param num_clusters: Number of clusters to form
+		:param num_clusters: Maximum number of clusters to form
 		:type num_clusters: int
 		"""
 		clustering = spectral(self.graph.nx_graph, kmax=self.num_clusters)
