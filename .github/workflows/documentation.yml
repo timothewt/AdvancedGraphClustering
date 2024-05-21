@@ -15,7 +15,7 @@ jobs:
            python-version: "3.11"
       - name: Install dependencies
         run: |
-          pip install -r sphinx furo sphinxcontrib-apidoc sphinx-autoapi
+          pip install sphinx furo sphinxcontrib-apidoc sphinx-autoapi
       - name: Sphinx build
         run: |
           cd docs/
