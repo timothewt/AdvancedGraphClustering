@@ -7,15 +7,15 @@ from .utils import extract_clusters_from_communities_list
 
 class Spectral(Algorithm):
 	"""Spectral clustering algorithm
+
+	:param graph: Graph object
+	:type graph: Graph
+	:param num_clusters: Number of clusters to form
+	:type num_clusters: int
 	"""
 
 	def __init__(self, graph: Graph, num_clusters: int = 3) -> None:
 		"""Constructor method
-
-		:param graph: Graph object
-		:type graph: Graph
-		:param num_clusters: Number of clusters to form
-		:type num_clusters: int
 		"""
 		super().__init__(graph)
 		self.num_clusters = num_clusters

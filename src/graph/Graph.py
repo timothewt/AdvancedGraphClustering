@@ -22,7 +22,6 @@ class Graph:
     :type directed: bool
     :param nx_graph: NetworkX graph object
     :type nx_graph: nx.Graph | nx.DiGraph
-
     """
 
 	def __init__(self, adj_matrix: np.ndarray, directed: bool = False, features: np.ndarray = None, labels: np.ndarray = None):

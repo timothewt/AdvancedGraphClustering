@@ -7,18 +7,18 @@ from .utils import extract_clusters_from_communities_list
 
 class Markov(Algorithm):
 	"""Markov clustering algorithm
+
+	:param graph: Graph object
+	:type graph: Graph
+	:param expansion: Cluster expansion factor
+	:type expansion: int
+	:param inflation: Cluster inflation factor
+	:type inflation: int
+	:param iterations: Maximum number of iterations
+	:type iterations: int
 	"""
 	def __init__(self, graph: Graph, expansion: int = 2, inflation: int = 2, iterations: int = 100) -> None:
 		"""Constructor method
-
-		:param graph: Graph object
-		:type graph: Graph
-		:param expansion: Cluster expansion factor
-		:type expansion: int
-		:param inflation: Cluster inflation factor
-		:type inflation: int
-		:param iterations: Maximum number of iterations
-		:type iterations: int
 		"""
 		super().__init__(graph)
 		self.expansion = expansion
