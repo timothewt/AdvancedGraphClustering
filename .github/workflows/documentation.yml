@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:
-           python-version: "3.11"
+          python-version: "3.11"
       - name: Install dependencies
         run: |
           pip install sphinx furo sphinxcontrib-apidoc sphinx-autoapi
@@ -28,5 +28,5 @@ jobs:
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/
+          publish_dir: docs/_build/html
           force_orphan: true
