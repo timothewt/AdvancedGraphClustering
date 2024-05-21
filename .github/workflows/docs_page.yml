@@ -40,6 +40,7 @@ jobs:
       - name: Build HTML
         run: | 
           cd docs/
+          sphinx-apidoc -f -o . ../src
           make html
       - name: Run ghp-import
         run: | 
