@@ -37,7 +37,8 @@ To run the implemented clustering techniques, execute the respective scripts pro
 Example usage:
 
 ```bash
-python main.py --method spectral --adj adjacency_matrix.csv --features node_features.csv --n_clusters 3
+cd src/
+py main.py --method spectral --adj adjacency_matrix.csv --features node_features.csv --n_clusters 3
 ```
 
 ## Implemented Techniques

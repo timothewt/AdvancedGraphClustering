@@ -15,7 +15,7 @@ class Graph:
     :param directed: Boolean flag to indicate if the graph is directed or undirected
     :type directed: bool
     :param graph: NetworkX graph object
-    :type graph: nx.Graph | nx.DiGraph
+    :type nx_graph: nx.Graph | nx.DiGraph
     :param features: Features of the nodes in the graph of shape (n, f) where f is the number of features per node
     :type features: np.ndarray
 
@@ -27,31 +27,40 @@ class Graph:
 		self.adj_matrix: np.ndarray = adj_matrix
 		self.edge_index: np.ndarray = np.argwhere(adj_matrix).transpose()
 		self.edge_weight: np.ndarray = adj_matrix[self.edge_index.transpose()[:, 0], self.edge_index.transpose()[:, 1]]
+		self.features: np.ndarray = features if features is not None else np.ones((adj_matrix.shape[0], 1))
 		self.directed: bool = directed
-		self.graph: nx.Graph | nx.DiGraph = nx.DiGraph() if directed else nx.Graph()
+		self.nx_graph: nx.Graph | nx.DiGraph = nx.DiGraph() if directed else nx.Graph()
 		self._create_nx_graph()
 
-		self.features: np.ndarray = features if features is not None else np.ones((adj_matrix.shape[0], 1))
 
 	def _create_nx_graph(self) -> None:
 		"""Adds nodes and edges to the NetworkX graph object
 		"""
-		self.graph.add_nodes_from(range(self.features.shape[0]), features=self.features)
-		self.graph.add_edges_from(self.edge_index.transpose())
+		self.nx_graph.add_nodes_from(range(self.features.shape[0]), features=self.features)
+		self.nx_graph.add_edges_from(self.edge_index.transpose())
 		for i, (u, v) in enumerate(self.edge_index.transpose()):
-			self.graph[u][v]['weight'] = self.edge_weight[i]
+			self.nx_graph[u][v]['weight'] = self.edge_weight[i]
 
-	def draw(self) -> None:
+	def draw(self, colors: list[tuple[float] | str] = None, draw_labels: bool = False) -> None:
 		"""Draws the graph using the NetworkX draw method
+
+		:param colors: List of colors for the nodes in the graph
+		:type colors: list[tuple[float] | str]
+		:param draw_labels: Boolean flag to indicate if the labels should be drawn
+		:type draw_labels: bool
 		"""
-		pos = nx.spring_layout(self.graph)
-		nx.draw_networkx_nodes(self.graph, pos, node_size=700)
-		nx.draw_networkx_edges(self.graph, pos)
-		nx.draw_networkx_labels(self.graph, pos)
+		pos = nx.spring_layout(self.nx_graph)
+		nx.draw_networkx_nodes(self.nx_graph, pos, edgecolors="black", linewidths=.5, node_color=colors)
+		nx.draw_networkx_edges(self.nx_graph, pos)
+		if draw_labels:
+			nx.draw_networkx_labels(self.nx_graph, pos)
+		plt.tight_layout()
+		plt.axis("off")
 		plt.show()
 
 	def __str__(self):
 		"""Returns the string representation of the graph object
+
 		:return: String representation of the graph object (number of nodes and edges)
 		:rtype: str
 		"""
@@ -59,6 +68,7 @@ class Graph:
 
 	def __repr__(self):
 		"""Returns the string representation of the graph object
+
 		:return: String representation of the graph object (number of nodes and edges)
 		:rtype: str
 		"""
@@ -66,22 +76,10 @@ class Graph:
 
 	def __getitem__(self, key: int) -> np.ndarray:
 		"""Returns the adjacency matrix of the graph for the given key
+
 		:param key: Key to access the adjacency matrix
 		:type key: int
 		:return: Adjacency matrix of the graph for the given key
 		:rtype: np.ndarray
 		"""
 		return self.adj_matrix[key]
-
-
-if __name__ == "__main__":
-	adj = np.array([
-		[0, 1, 1, 0],
-		[1, 0, 1, 1],
-		[1, 1, 0, 1],
-		[0, 1, 1, 0]
-	])
-
-	graph = Graph(adj, directed=False)
-	nx.draw(graph.graph, with_labels=True)
-	plt.show()
