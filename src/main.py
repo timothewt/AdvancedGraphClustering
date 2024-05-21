@@ -1,6 +1,7 @@
 import argparse
 import os
 
+from prettytable import PrettyTable
 import numpy as np
 
 from graph import Graph
@@ -11,24 +12,32 @@ def main():
 	"""Main function
 	"""
 	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms")
+
+	# Algorithm
 	parser.add_argument("--algorithm", type=str, default="gae", help="Algorithm to use")
+
 	# Dataset
-	parser.add_argument("--dataset", type=str, help="Dataset to use (cora, citeseer, pubmed). If not provided, use custom dataset")
+	parser.add_argument("--dataset", type=str, help="Dataset to use (karateclub, cora, citeseer, pubmed). If not provided, use custom dataset")
+
 	# Custom Dataset
 	parser.add_argument("--adj", type=str, help="Graph adjacency matrix as .csv (no header and index)")
 	parser.add_argument("--features", type=str, help="Graph features matrix as .csv (no header and index)")
 	parser.add_argument("--labels", type=str, help="Graph labels matrix as .csv (no header and index)")
+
 	# Markov clustering parameters
 	parser.add_argument("--expansion", type=float, default=2.0, help="Expand parameter for Markov clustering")
 	parser.add_argument("--inflation", type=float, default=2.0, help="Inflation parameter for Markov clustering")
 	parser.add_argument("--iterations", type=int, default=100, help="Number of iterations for Markov clustering")
+
 	# Spectral clustering parameters
 	parser.add_argument("--num_clusters", type=int, default=3, help="Number of clusters for Spectral clustering and Deep Graph Clustering")
+
 	# Deep parameters
 	parser.add_argument("--epochs", type=int, default=100, help="Number of epochs for Deep Graph Clustering")
 	parser.add_argument("--lr", type=float, default=0.01, help="Learning rate for Deep Graph Clustering")
 	parser.add_argument("--latent_dim", type=int, default=16, help="Latent dimension for Deep Graph Clustering")
 	parser.add_argument("--dropout", type=float, default=0.5, help="Dropout rate for Deep Graph Clustering")
+
 	# Output
 	parser.add_argument("--output_path", type=str, default="../output", help="Output path to save the results")
 	parser.add_argument("--draw_clusters", action="store_true", help="Draw clusters after clustering")
@@ -36,7 +45,7 @@ def main():
 	args = parser.parse_args()
 
 	if args.dataset:
-		assert args.dataset in ["cora", "citeseer", "pubmed"], "Invalid dataset"
+		assert args.dataset in ["karateclub", "cora", "citeseer", "pubmed"], "Invalid dataset"
 		adj = np.load(f"../data/{args.dataset}/adj.npy")
 		features = np.load(f"../data/{args.dataset}/feat.npy").astype(np.float32)
 		labels = np.load(f"../data/{args.dataset}/label.npy")
@@ -69,7 +78,14 @@ def main():
 	print("Running algorithm:", args.algorithm)
 	algo.run()
 	print("Done!")
-	# TODO: Add evaluation metrics
+
+	# Evaluating the clustering
+	evaluation = algo.evaluate_clustering()
+	print("Evaluation:")
+	table = PrettyTable(["Metric", "Value"])
+	for metric, value in evaluation:
+		table.add_row([metric, f"{value:.3}"])
+	print(table)
 
 	# Saving the resulting clustering
 	if not os.path.exists(args.output_path):

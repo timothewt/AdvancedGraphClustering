@@ -159,4 +159,4 @@ cython_debug/
 .vscode/
 .notebooks/figure/
 
-.output/
+output/
