@@ -77,15 +77,15 @@ def main():
 	# Running the algorithm
 	print("Running algorithm:", args.algorithm)
 	algo.run()
-	print("Done!")
+	print("Done!\n")
 
 	# Evaluating the clustering
 	evaluation = algo.evaluate_clustering()
-	print("Evaluation:")
+	print("  Evaluation:")
 	table = PrettyTable(["Metric", "Value"])
 	for metric, value in evaluation:
 		table.add_row([metric, f"{value:.3}"])
-	print(table)
+	print(table, end="\n\n")
 
 	# Saving the resulting clustering
 	if not os.path.exists(args.output_path):
