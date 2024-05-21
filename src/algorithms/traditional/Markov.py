@@ -1,31 +1,38 @@
 import markov_clustering as mc
 
 from algorithms.Algorithm import Algorithm
+from graph import Graph
 from .utils import extract_clusters_from_communities_list
 
 
 class Markov(Algorithm):
 	"""Markov clustering algorithm
 	"""
+	def __init__(self, graph: Graph, expansion: int = 2, inflation: int = 2, iterations: int = 100) -> None:
+		"""Constructor method
 
-	def run(self, expansion: int = 2, inflation: int = 2, iterations: int = 100, pruning_threshold: int = .001) -> None:
-		"""Runs the algorithm with the given parameters
-
+		:param graph: Graph object
+		:type graph: Graph
 		:param expansion: Cluster expansion factor
 		:type expansion: int
 		:param inflation: Cluster inflation factor
 		:type inflation: int
 		:param iterations: Maximum number of iterations
 		:type iterations: int
-		:param pruning_threshold: Threshold below which matrix elements will be set to 0
-		:type pruning_threshold: float
+		"""
+		super().__init__(graph)
+		self.expansion = expansion
+		self.inflation = inflation
+		self.iterations = iterations
+
+	def run(self) -> None:
+		"""Runs the algorithm with the given parameters
 		"""
 		clustering = mc.run_mcl(
 			self.graph.adj_matrix,
-			expansion=expansion,
-			inflation=inflation,
-			iterations=iterations,
-			pruning_threshold=pruning_threshold
+			expansion=self.expansion,
+			inflation=self.inflation,
+			iterations=self.iterations,
 		)
 		self.clusters = extract_clusters_from_communities_list(mc.get_clusters(clustering))
 

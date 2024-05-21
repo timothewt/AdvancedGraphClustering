@@ -38,7 +38,13 @@ Example usage:
 
 ```bash
 cd src/
-py main.py --method spectral --adj adjacency_matrix.csv --features node_features.csv --n_clusters 3
+py main.py --algorithm spectral --adj adjacency_matrix.csv --features node_features.csv --num_clusters 3
+```
+
+Use the `--help` flag to see the available options for the script (hyperparameters vary based on the clustering technique):
+
+```bash
+py main.py --help
 ```
 
 ## Implemented Techniques

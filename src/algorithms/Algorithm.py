@@ -5,7 +5,7 @@ class Algorithm:
 	"""Base class for all algorithms
 	"""
 
-	def __init__(self, graph: Graph):
+	def __init__(self, graph: Graph, *args, **kwargs):
 		"""Constructor method
 		"""
 		self.graph: Graph = graph
