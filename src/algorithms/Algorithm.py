@@ -5,7 +5,7 @@ from graph import Graph
 
 
 class Algorithm:
-	"""Base class for all algorithms
+	"""Base class for graph clustering algorithms
 
 	:param graph: Graph object
 	:type graph: Graph

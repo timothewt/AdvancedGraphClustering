@@ -17,7 +17,7 @@ class AdaGAE(Algorithm):
 	:type epochs: int
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float, latent_dim: int, dropout: int, epochs: int):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100):
 		"""Constructor method
 		"""
 		super(AdaGAE, self).__init__(graph)

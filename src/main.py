@@ -14,7 +14,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms")
 
 	# Algorithm
-	parser.add_argument("--algorithm", type=str, default="gae", help="Algorithm to use")
+	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use")
 
 	# Dataset
 	parser.add_argument("--dataset", type=str, help="Dataset to use (karateclub, cora, citeseer, pubmed). If not provided, use custom dataset")
@@ -38,6 +38,8 @@ def main():
 	parser.add_argument("--latent_dim", type=int, default=24, help="Latent dimension for Deep Graph Clustering")
 	parser.add_argument("--dropout", type=float, default=0.4, help="Dropout rate for Deep Graph Clustering")
 
+	parser.add_argument("--k", type=int, default=3, help="Discriminator training iterations for the ARGA model")
+
 	# Output
 	parser.add_argument("--output_path", type=str, default="../output", help="Output path to save the results")
 	parser.add_argument("--draw_clusters", action="store_true", help="Draw clusters after clustering")
@@ -57,27 +59,27 @@ def main():
 		labels = np.loadtxt(args.labels, delimiter=",").astype(np.uint32) if args.labels else None
 		graph = Graph(adj_matrix=adj, features=features, labels=labels)
 
-	if args.algorithm == "gae":
+	if args.algo == "gae":
 		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout)
-	elif args.algorithm == "adagae":
+	elif args.algo == "adagae":
 		algo = AdaGAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout)
-	elif args.algorithm == "arga":
+	elif args.algo == "arga":
 		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout)
-	elif args.algorithm == "markov":
+	elif args.algo == "markov":
 		algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
-	elif args.algorithm == "louvain":
+	elif args.algo == "louvain":
 		algo = Louvain(graph)
-	elif args.algorithm == "leiden":
+	elif args.algo == "leiden":
 		algo = Leiden(graph)
-	elif args.algorithm == "sbm":
+	elif args.algo == "sbm":
 		algo = SBM(graph)
-	elif args.algorithm == "spectral":
+	elif args.algo == "spectral":
 		algo = Spectral(graph, num_clusters=args.num_clusters)
 	else:
 		raise ValueError("Invalid algorithm")
 
 	# Running the algorithm
-	print("Running algorithm:", args.algorithm)
+	print("Running algorithm:", args.algo)
 	algo.run()
 	print("Done!\n")
 
@@ -92,7 +94,7 @@ def main():
 	# Saving the resulting clustering
 	if not os.path.exists(args.output_path):
 		os.makedirs(args.output_path)
-	output_file = os.path.abspath(f"{args.output_path}/{ds + '_' if (ds := args.dataset) is not None else ''}{args.algorithm}_clusters.csv")
+	output_file = os.path.abspath(f"{args.output_path}/{ds + '_' if (ds := args.dataset) is not None else ''}{args.algo}_clusters.csv")
 	print(f"Saving the resulting clustering to {output_file}.")
 	np.savetxt(output_file, np.stack([range(graph.adj_matrix.shape[0]), algo.clusters], axis=1), delimiter=",", fmt="%d",)
 

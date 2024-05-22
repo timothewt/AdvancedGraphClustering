@@ -1,4 +1,3 @@
-from .Algorithm import Algorithm
 from .deep.AdaGAE import AdaGAE
 from .deep.GAE import GAE
 from .deep.ARGA import ARGA
