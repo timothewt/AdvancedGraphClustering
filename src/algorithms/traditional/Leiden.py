@@ -1,17 +1,17 @@
-from cdlib.algorithms import louvain
+from cdlib.algorithms import leiden
 
 from algorithms.Algorithm import Algorithm
 from .utils import extract_clusters_from_communities_list
 
 
-class Louvain(Algorithm):
+class Leiden(Algorithm):
 	"""Louvain clustering algorithm
 	"""
 
 	def run(self) -> None:
 		"""Runs the algorithm
 		"""
-		clustering = louvain(self.graph.nx_graph)
+		clustering = leiden(self.graph.nx_graph)
 		self.clusters = extract_clusters_from_communities_list(clustering.communities)
 
 	def __str__(self):

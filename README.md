@@ -1,6 +1,6 @@
 # Advanced Graph Clustering 
 
-This project focuses on the study and implementation of various graph clustering techniques, covering traditional techniques such as Spectral Clustering and Louvain Method, as well as deep graph clustering methods like Graph Autoencoders. The project aims to provide a comprehensive overview of graph clustering algorithms and their applications in network analysis.
+This project focuses on the study and implementation of various graph clustering techniques, covering traditional techniques such as Spectral Clustering and Leiden Method, as well as deep graph clustering methods like Graph Autoencoders. The project aims to provide a comprehensive overview of graph clustering algorithms and their applications in network analysis.
 
 ## Table of Contents
 
@@ -49,10 +49,10 @@ py main.py --help
 
 ## Implemented Techniques
 - Traditional Clustering Techniques:
-  - Louvain Method
-  - Markov Clustering Algorithm
   - Spectral Clustering
   - Stochastic Block Models
+  - Markov Clustering Algorithm
+  - Leiden Method
 - Deep Graph Clustering:
   - Graph Autoencoder (GAE)
   - Adversarially Regularized Graph Autoencoder (ARGA)

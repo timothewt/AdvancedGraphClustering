@@ -160,3 +160,5 @@ cython_debug/
 .notebooks/figure/
 
 output/
+
+/notebooks/figures/
