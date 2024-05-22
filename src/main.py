@@ -30,13 +30,13 @@ def main():
 	parser.add_argument("--iterations", type=int, default=100, help="Number of iterations for Markov clustering")
 
 	# Spectral clustering parameters
-	parser.add_argument("--num_clusters", type=int, default=3, help="Number of clusters for Spectral clustering and Deep Graph Clustering")
+	parser.add_argument("--num_clusters", type=int, default=7, help="Number of clusters for Spectral clustering and Deep Graph Clustering")
 
 	# Deep parameters
 	parser.add_argument("--epochs", type=int, default=100, help="Number of epochs for Deep Graph Clustering")
-	parser.add_argument("--lr", type=float, default=0.01, help="Learning rate for Deep Graph Clustering")
-	parser.add_argument("--latent_dim", type=int, default=16, help="Latent dimension for Deep Graph Clustering")
-	parser.add_argument("--dropout", type=float, default=0.5, help="Dropout rate for Deep Graph Clustering")
+	parser.add_argument("--lr", type=float, default=0.001, help="Learning rate for Deep Graph Clustering")
+	parser.add_argument("--latent_dim", type=int, default=24, help="Latent dimension for Deep Graph Clustering")
+	parser.add_argument("--dropout", type=float, default=0.4, help="Dropout rate for Deep Graph Clustering")
 
 	# Output
 	parser.add_argument("--output_path", type=str, default="../output", help="Output path to save the results")
@@ -82,7 +82,7 @@ def main():
 	print("Done!\n")
 
 	# Evaluating the clustering
-	evaluation = algo.evaluate_clustering()
+	evaluation = algo.evaluate()
 	print("  Evaluation:")
 	table = PrettyTable(["Metric", "Value"])
 	for metric, value in evaluation:
@@ -103,4 +103,7 @@ def main():
 
 
 if __name__ == "__main__":
+	"""Example usage:
+	$ python main.py --algorithm gae --dataset cora --num_clusters 2 --epochs 100 --lr 0.01 --latent_dim 16 --draw_clusters
+	"""
 	main()

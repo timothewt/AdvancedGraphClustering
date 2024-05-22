@@ -63,10 +63,9 @@ class Graph:
 		else:
 			colors = "darkgray"
 		node_size = 50 if len(self.features) < 50 else 5
-		edge_width = 1 if len(self.features) < 50 else 0.75
 		pos = nx.spring_layout(self.nx_graph)
 		nx.draw_networkx_nodes(self.nx_graph, pos, edgecolors="darkgray", linewidths=.5, node_color=colors, node_size=node_size)
-		nx.draw_networkx_edges(self.nx_graph, pos, width=edge_width, alpha=0.5, edge_color="gray")
+		nx.draw_networkx_edges(self.nx_graph, pos, width=1, alpha=0.5, edge_color="gray")
 		if draw_labels:
 			nx.draw_networkx_labels(self.nx_graph, pos)
 		plt.tight_layout()

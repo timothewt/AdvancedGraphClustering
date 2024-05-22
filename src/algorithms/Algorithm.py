@@ -22,7 +22,7 @@ class Algorithm:
 		"""
 		raise NotImplementedError
 
-	def evaluate_clustering(self) -> list[(str, float)]:
+	def evaluate(self) -> list[(str, float)]:
 		"""Evaluates the clustering through various supervised (if labels provided in the Graph object) and unsupervised metrics:
 		Supervised:
 		- Accuracy
