@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 import numpy as np
 
 from graph import Graph
-from algorithms import AdaGAE, GAE, ARGA, Markov, Leiden, SBM, Spectral
+from algorithms import AdaGAE, GAE, ARGA, Markov, Louvain, Leiden, SBM, Spectral
 
 
 def main():
@@ -66,6 +66,8 @@ def main():
 	elif args.algorithm == "markov":
 		algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
 	elif args.algorithm == "louvain":
+		algo = Louvain(graph)
+	elif args.algorithm == "leiden":
 		algo = Leiden(graph)
 	elif args.algorithm == "sbm":
 		algo = SBM(graph)

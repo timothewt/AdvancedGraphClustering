@@ -1,17 +1,17 @@
-from cdlib.algorithms import leiden
+from cdlib.algorithms import louvain
 
 from algorithms.Algorithm import Algorithm
 from .utils import extract_clusters_from_communities_list
 
 
-class Leiden(Algorithm):
-	"""Leiden clustering algorithm
+class Louvain(Algorithm):
+	"""Louvain clustering algorithm
 	"""
 
 	def run(self) -> None:
 		"""Runs the algorithm
 		"""
-		clustering = leiden(self.graph.nx_graph)
+		clustering = louvain(self.graph.nx_graph)
 		self.clusters = extract_clusters_from_communities_list(clustering.communities)
 
 	def __str__(self):
@@ -20,4 +20,4 @@ class Leiden(Algorithm):
 		:return: String representation of the algorithm object
 		:rtype: str
 		"""
-		return "Leiden algorithm object"
+		return "Louvain algorithm object"
