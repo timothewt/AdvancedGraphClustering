@@ -48,17 +48,16 @@ class MVGRL(DeepAlgorithm):
 	def _train(self) -> None:
 		"""Trains the model
 		"""
-		x_t = torch.tensor(self.graph.features, dtype=torch.float)
-		edge_index_t = torch.tensor(self.graph.edge_index, dtype=torch.long)
+		corrupted_labels = torch.randperm(self.x_t.size(0))
 
-		true_labels = torch.ones(x_t.size(0) * 2, dtype=torch.float)
+		true_labels = torch.ones(self.x_t.size(0) * 2, dtype=torch.float)
 		labels = torch.cat([true_labels, true_labels * 0], dim=-1)
 		criterion = nn.BCEWithLogitsLoss()
 		for _ in (pbar := trange(self.epochs, desc="GAE Training")):
 			self.model.train()
 			self.optimizer.zero_grad()
 			# Training the model
-			discriminator_output, _, _, _, _ = self.model(x_t, edge_index_t, self.diff_edge_index, self.diff_edge_weight)
+			discriminator_output, _, _, _, _ = self.model(self.x_t, self.edge_index_t, self.diff_edge_index, self.diff_edge_weight, corrupted_labels)
 			loss = criterion(discriminator_output, labels)
 			loss.backward()
 			self.optimizer.step()

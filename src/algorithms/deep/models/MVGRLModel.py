@@ -1,3 +1,5 @@
+"""Adapted from https://github.com/kavehhassani/mvgrl/blob/master/node/train.py
+"""
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -121,7 +123,7 @@ class MVGRLModel(nn.Module):
 		self.readout: Readout = Readout(latent_dim)
 		self.discriminator: Discriminator = Discriminator(latent_dim)
 
-	def forward(self, x: torch.tensor, edge_index: torch.tensor, diff_edge_index: torch.tensor, diff_edge_weight: torch.tensor) -> tuple[torch.tensor, torch.tensor, torch.tensor, torch.tensor, torch.tensor]:
+	def forward(self, x: torch.tensor, edge_index: torch.tensor, diff_edge_index: torch.tensor, diff_edge_weight: torch.tensor, corrupted_idx: torch.tensor = None) -> tuple[torch.tensor, torch.tensor, torch.tensor, torch.tensor, torch.tensor]:
 		"""Forward pass
 
 		:param x: Input features
@@ -132,12 +134,15 @@ class MVGRLModel(nn.Module):
 		:type diff_edge_index: torch.tensor
 		:param diff_edge_weight: Diffused edge weight tensor
 		:type diff_edge_weight: torch.tensor
+		:param corrupted_idx: Corrupted index tensor
+		:type corrupted_idx: torch.tensor
 		:return: Discriminator output, readout output of the original view, readout output of the diffused view, embeddings of the nodes of the original view, embeddings of the nodes of the diffused view
 		:rtype: tuple[torch.tensor, torch.tensor, torch.tensor, torch.tensor]
 		"""
 		h1_real, h2_real = self.gcn_real(x, edge_index)
 		h1_diff, h2_diff = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
-		corrupted_idx = torch.randperm(x.size(0))
+		if corrupted_idx is None:
+			corrupted_idx = torch.randperm(x.size(0))
 		h3_real, h4_real = self.gcn_real(x[corrupted_idx], edge_index)
 		h3_diff, h4_diff = self.gcn_diff(x[corrupted_idx], diff_edge_index, diff_edge_weight)
 		r1 = self.readout(h1_real, h2_real)
