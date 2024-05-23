@@ -36,12 +36,23 @@ class DeepAlgorithm(Algorithm):
 		self.use_pretrained = use_pretrained
 		self.save_model = save_model
 
+		self.x_t = torch.tensor(self.graph.features, dtype=torch.float)
+		self.edge_index_t = torch.tensor(self.graph.edge_index, dtype=torch.long)
+
 		self.model: torch.nn.Module = torch.nn.Module()
 
 	def _train(self) -> None:
 		"""Trains the model, to be implemented by subclasses
 		"""
 		raise NotImplementedError
+
+	def _encode_nodes(self) -> torch.tensor:
+		"""Encodes the node features using the model
+
+		:return: Node embeddings
+		:rtype: torch.tensor
+		"""
+		return self.model.encode(self.x_t, self.edge_index_t).detach().numpy()
 
 	def run(self) -> None:
 		"""Trains the model and runs k-means clustering on the node embeddings.
@@ -51,10 +62,10 @@ class DeepAlgorithm(Algorithm):
 			if self.save_model:
 				torch.save(self.model.state_dict(), f"algorithms/deep/pretrained/{self.__class__.__name__.lower()}_{self.graph.dataset_name}.pt")
 		self.model.eval()
-		z_np = self.model.encode(torch.tensor(self.graph.features, dtype=torch.float), torch.tensor(self.graph.edge_index, dtype=torch.long)).detach().numpy()
+		z_np = self._encode_nodes()
 		clusters = [
 			get_clusters(z_np, self.num_clusters) for _ in range(10)
-		]  # Run clustering 10 times and get the most common clustering
+		]  # Run clustering 10 times and get the best clustering
 		best_clustering = None
 		best_acc = 0
 		for clustering in clusters:

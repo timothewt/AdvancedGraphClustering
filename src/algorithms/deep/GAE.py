@@ -3,7 +3,7 @@ from torch_geometric.nn import GAE as GAEModel
 from tqdm import trange
 
 from algorithms.deep.DeepAlgorithm import DeepAlgorithm
-from algorithms.deep.GCNEncoder import GCNEncoder
+from algorithms.deep.models.GCNEncoder import GCNEncoder
 from algorithms.deep.utils import get_clusters
 from graph import Graph
 
@@ -41,14 +41,12 @@ class GAE(DeepAlgorithm):
 	def _train(self) -> None:
 		"""Trains the model
 		"""
-		x_t = torch.tensor(self.graph.features, dtype=torch.float)
-		edge_index_t = torch.tensor(self.graph.edge_index, dtype=torch.long)
 		for _ in (pbar := trange(self.epochs, desc="GAE Training")):
 			self.model.train()
 			self.optimizer.zero_grad()
-			z = self.model.encode(x_t, edge_index_t)
+			z = self.model.encode(self.x_t, self.edge_index_t)
 			# Training the encoder
-			loss = self.model.recon_loss(z, edge_index_t)
+			loss = self.model.recon_loss(z, self.edge_index_t)
 			loss.backward()
 			self.optimizer.step()
 			# Evaluation

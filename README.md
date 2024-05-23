@@ -34,11 +34,13 @@ pip install -r requirements.txt
 
 To run the implemented clustering techniques, execute the respective scripts provided in the project. Detailed usage instructions for each technique can be found in their corresponding documentation on the GitHub page.
 
+Note: For Deep Graph Clustering techniques, the hyperparameters are only relevant when a pre-trained model is not used.
+
 Example usage:
 
 ```bash
 cd src/
-py main.py --algo gae --dataset cora --num_clusters 7 --latent_dim 32 --use_pretrained
+py main.py --algo gae --dataset cora --num_clusters 7 --use_pretrained
 ```
 
 Use the `--help` flag to see the available options for the script (hyperparameters vary based on the clustering technique):
@@ -49,13 +51,15 @@ py main.py --help
 
 ## Implemented Techniques
 - Traditional Clustering Techniques:
-  - Spectral Clustering
-  - Stochastic Block Models
-  - Markov Clustering Algorithm
-  - Leiden Method
+  - Spectral Clustering [1]
+  - Stochastic Block Models [2]
+  - Markov Clustering Algorithm [3]
+  - Louvain Algorithm [4]
+  - Leiden Algorithm [5]
 - Deep Graph Clustering:
-  - Graph Autoencoder (GAE)
-  - Adversarially Regularized Graph Autoencoder (ARGA)
+  - Graph Autoencoder (GAE) [6]
+  - Adversarially Regularized Graph Autoencoder (ARGA) [7]
+  - Multi-view Graph Representation Learning (MVGRL) [8]
 
 ## Datasets
 
@@ -68,6 +72,45 @@ The datasets are available in the `data/` directory and include the following:
 | Citeseer   | 3327   | 4732  | 3703      | 6       | Citation network |
 | DBLP       | 4057   | 3528  | 334       | 4       | Co-authorship network |
 | Karateclub | 34     | 78    | 34        | 4       | Social network |
+
+## References
+[1] Ulrike von Luxburg. A tutorial on spectral clustering. (arXiv:0711.0189), November 2007. doi:
+10.48550/arXiv.0711.0189. URL http://arxiv.org/
+abs/0711.0189. arXiv:0711.0189 [cs].
+
+[2] Clement Lee and Darren J. Wilkinson. A review of stochastic block models and extensions for graph clustering. Applied Network Science, 4(11):1–50, December 2019. ISSN 2364-8228. doi: 10.1007/s41109-019-0232-2.
+
+[3] Stijn Van Dongen. Graph clustering via a discrete
+uncoupling process. SIAM Journal on Matrix Analysis
+and Applications, 30(1):121–141, January 2008. ISSN
+0895-4798. doi: 10.1137/040608635.
+
+[4] Vincent D. Blondel, Jean-Loup Guillaume, Renaud
+Lambiotte, and Etienne Lefebvre. Fast unfolding of
+communities in large networks. Journal of Statistical
+Mechanics: Theory and Experiment, 2008(10):P10008,
+October 2008. ISSN 1742-5468. doi: 10.1088/1742-
+5468/2008/10/P10008. arXiv:0803.0476 [cond-mat,
+physics:physics].
+
+[5] V. A. Traag, L. Waltman, and N. J. van Eck. From louvain to leiden: guaranteeing well-connected communities. Scientific Reports, 9(1):5233, March 2019. ISSN 2045-2322. Doi: 10.1038/s41598-019-41695-z.
+
+[6] Thomas N. Kipf and Max Welling. Variational graph
+auto-encoders. (arXiv:1611.07308), November 2016. doi:
+10.48550/arXiv.1611.07308. URL http://arxiv.org/
+abs/1611.07308. arXiv:1611.07308 [cs, stat].
+
+[7] Shirui Pan, Ruiqi Hu, Guodong Long, Jing Jiang, Lina Yao, and Chengqi Zhang.
+Adversarially regularized graph autoencoder for graph embedding.
+(arXiv:1802.04407), January 2019.
+doi: 10.48550/ arXiv.1802.04407.
+URL http://arxiv.org/abs/ 1802.04407.
+arXiv:1802.04407 [cs, stat].
+
+[8] Kaveh Hassani and Amir Hosein Khasahmadi.
+Contrastive multi-view representation learning on graphs.
+(arXiv:2006.05582), June 2020. doi: 10.48550/arXiv.2006.05582.
+URL http://arxiv.org/abs/2006.05582. arXiv:2006.05582 [cs, stat].
 
 ## License
 This project is licensed under the MIT License.

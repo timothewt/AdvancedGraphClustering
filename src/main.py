@@ -5,13 +5,13 @@ from prettytable import PrettyTable
 import numpy as np
 
 from graph import Graph
-from algorithms import GAE, ARGA, Markov, Louvain, Leiden, SBM, Spectral
+from algorithms import GAE, ARGA, MVGRL, Markov, Louvain, Leiden, SBM, Spectral
 
 
 def main():
 	"""Main function
 	"""
-	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms")
+	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 	# Algorithm
 	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use")
@@ -33,9 +33,10 @@ def main():
 	parser.add_argument("--num_clusters", type=int, default=7, help="Number of clusters for Spectral clustering and Deep Graph Clustering")
 
 	# Deep parameters
+	default_latent_dim = 24
 	parser.add_argument("--epochs", type=int, default=100, help="Number of epochs for Deep Graph Clustering")
 	parser.add_argument("--lr", type=float, default=0.001, help="Learning rate for Deep Graph Clustering")
-	parser.add_argument("--latent_dim", type=int, default=24, help="Latent dimension for Deep Graph Clustering")
+	parser.add_argument("--latent_dim", type=int, default=default_latent_dim, help="Latent dimension for Deep Graph Clustering")
 	parser.add_argument("--dropout", type=float, default=0.4, help="Dropout rate for Deep Graph Clustering")
 	parser.add_argument("--use_pretrained", action="store_true", help="Use a pretrained model for Deep Graph Clustering")
 	parser.add_argument("--save_model", action="store_true", help="Save the model after training if use_pretrained is not specified")
@@ -46,6 +47,7 @@ def main():
 
 	args = parser.parse_args()
 
+	# Loading the dataset
 	if args.dataset:
 		assert args.dataset in ["karateclub", "cora", "citeseer", "dblp"], "Invalid dataset"
 		adj = np.load(f"../data/{args.dataset}/adj.npy")
@@ -59,13 +61,19 @@ def main():
 		labels = np.loadtxt(args.labels, delimiter=",").astype(np.uint32) if args.labels else None
 		graph = Graph(adj_matrix=adj, features=features, labels=labels)
 
-	if args.use_pretrained or args.save_model:  # ensures that the pretrained folder exists
+	# Ensuring that the pretrained folder exists
+	if args.use_pretrained or args.save_model:
 		os.mkdir("algorithms/deep/pretrained") if not os.path.exists("algorithms/deep/pretrained") else None
 
+	# Setting the latent dimension when using pretrained models to avoid dimension mismatch
+	if args.use_pretrained:
+		args.latent_dim = default_latent_dim
+
+	# Instantiating the algorithm
 	if args.algo == "gae":
 		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	# elif args.algo == "mvgrl":
-	# 	algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
+	elif args.algo == "mvgrl":
+		algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "arga":
 		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "markov":

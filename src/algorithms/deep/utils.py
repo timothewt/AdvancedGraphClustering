@@ -20,3 +20,18 @@ def get_clusters(z: np.ndarray, n_clusters: int, method: str = "kmeans") -> np.n
 	else:
 		raise ValueError(f"Unknown clustering method: {method}")
 	return clusters.labels_
+
+
+def compute_diffusion_matrix(adj: np.ndarray, alpha: float = 0.2) -> np.ndarray:
+	"""Computes the diffusion matrix for MVGRL using PageRank
+
+	:param adj: Adjacency matrix
+	:type adj: np.ndarray
+	:param alpha: Teleport probability
+	:type alpha: float
+	:return: Diffusion matrix
+	:rtype: np.ndarray
+	"""
+	adj = adj + np.eye(adj.shape[0])
+	deg_sqrt_inv = np.diag(1.0 / np.sqrt(np.sum(adj, axis=1)))
+	return np.dot(np.linalg.inv(np.eye(adj.shape[0]) - alpha * np.dot(deg_sqrt_inv, adj).T), (1 - alpha) * deg_sqrt_inv)
