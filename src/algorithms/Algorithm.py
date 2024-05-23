@@ -49,8 +49,10 @@ class Algorithm:
 	
 		conductance : float = self._get_conductance()
 		silouhette : float = self. _get_modularity()
+		internal_density : float = self._get_internal_density()
 		metrics.append(("Conductance",conductance))
 		metrics.append(("Modularity",silouhette))
+		metrics.append(("Internal density",internal_density))
 
 
 		return metrics
@@ -85,14 +87,13 @@ class Algorithm:
 		:rtype: float
 		"""
 		G = self.graph.nx_graph
-
+		# A revoir (se repète)
 		clusters = defaultdict(set)
 		for node, cluster_id in enumerate(self.clusters):
 			clusters[cluster_id].add(node)
 		partition = list(clusters.values())
 
 		conductances = []
-		print(partition)
 		for cluster in partition:
 			cut_size = nx.cut_size(G, cluster)
 
@@ -116,12 +117,6 @@ class Algorithm:
 		:return: Modularity of the clustering
 		:rtype: float
 		"""
-
-		clusters = defaultdict(set)
-		for node, cluster_id in enumerate(self.clusters):
-			clusters[cluster_id].add(node)
-		partition = list(clusters.values())
-
 		G = self.graph.nx_graph
 		
 		clusters = defaultdict(set)
@@ -132,7 +127,31 @@ class Algorithm:
 
 		return modularity_score
 	
+	def _get_internal_density(self) -> float:
+		"""Calculates the average internal density .
 
+		Returns:
+			float: The average internal density of each cluster.
+			
+		"""
+
+		G = self.graph.nx_graph
+		
+		clusters = defaultdict(set)
+		for node, cluster_id in enumerate(self.clusters):
+			clusters[cluster_id].add(node)
+		partition = list(clusters.values())
+
+		densities = []
+
+		for cluster in partition:
+			subgraph = self.graph.nx_graph.subgraph(cluster)
+
+			density = nx.density(subgraph)
+
+			densities.append(density)
+
+		return np.mean(densities)
 
 	def _get_nmi(self) -> float:
 		"""Returns the Normalized Mutual Information of the clustering
