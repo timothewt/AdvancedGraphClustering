@@ -38,7 +38,7 @@ Example usage:
 
 ```bash
 cd src/
-py main.py --algorithm spectral --adj adjacency_matrix.csv --features node_features.csv --num_clusters 3
+py main.py --algo gae --dataset cora --num_clusters 7 --latent_dim 32 --use_pretrained
 ```
 
 Use the `--help` flag to see the available options for the script (hyperparameters vary based on the clustering technique):
@@ -56,7 +56,18 @@ py main.py --help
 - Deep Graph Clustering:
   - Graph Autoencoder (GAE)
   - Adversarially Regularized Graph Autoencoder (ARGA)
-  - Adaptative Graph Autoencoder (AdaGAE)
+
+## Datasets
+
+The project uses several benchmark datasets for evaluating the clustering techniques.
+The datasets are available in the `data/` directory and include the following:
+
+| Dataset    | Nodes  | Edges | Features  | Classes | Description |
+|------------|--------|-------|-----------|---------|-------------|
+| Cora       | 2708   | 5429  | 1433      | 7       | Citation network |
+| Citeseer   | 3327   | 4732  | 3703      | 6       | Citation network |
+| DBLP       | 4057   | 3528  | 334       | 4       | Co-authorship network |
+| Karateclub | 34     | 78    | 34        | 4       | Social network |
 
 ## License
 This project is licensed under the MIT License.
