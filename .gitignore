@@ -160,5 +160,5 @@ cython_debug/
 .notebooks/figure/
 
 output/
-
+/data/Planetoid/
 /notebooks/figures/

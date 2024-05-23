@@ -10,21 +10,17 @@ class Graph:
 
     :param adj_matrix: Adjacency matrix of the graph of shape (n, n) where n is the number of nodes in the graph
     :type adj_matrix: np.ndarray
-    :param edge_index: Edge index of the graph of shape (2, e) where e is the number of edges in the graph
-    :type edge_index: np.ndarray
-    :param edge_weight: Edge weight of the graph of shape (e,) where e is the number of edges in the graph
-    :type edge_weight: np.ndarray
     :param features: Features of the nodes in the graph of shape (n, f) where f is the number of features per node
     :type features: np.ndarray
     :param labels: Labels of the nodes in the graph of shape (n,) where n is the number of nodes in the graph
     :type labels: np.ndarray
     :param directed: Boolean flag to indicate if the graph is directed or undirected
     :type directed: bool
-    :param nx_graph: NetworkX graph object
-    :type nx_graph: nx.Graph | nx.DiGraph
+    :param dataset_name: Name of the dataset (if possible)
+    :type dataset_name: str
     """
 
-	def __init__(self, adj_matrix: np.ndarray, directed: bool = False, features: np.ndarray = None, labels: np.ndarray = None):
+	def __init__(self, adj_matrix: np.ndarray, directed: bool = False, features: np.ndarray = None, labels: np.ndarray = None, dataset_name: np.ndarray = ""):
 		"""Constructor method
 		"""
 		self.adj_matrix: np.ndarray = adj_matrix
@@ -32,6 +28,7 @@ class Graph:
 		self.edge_weight: np.ndarray = adj_matrix[self.edge_index.transpose()[:, 0], self.edge_index.transpose()[:, 1]]
 		self.features: np.ndarray = features if features is not None else np.ones((adj_matrix.shape[0], 1))
 		self.labels: np.ndarray = labels
+		self.dataset_name: str = dataset_name
 		self.directed: bool = directed
 		self.nx_graph: nx.Graph | nx.DiGraph = nx.DiGraph() if directed else nx.Graph()
 		self._create_nx_graph()

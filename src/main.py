@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 import numpy as np
 
 from graph import Graph
-from algorithms import AdaGAE, GAE, ARGA, Markov, Louvain, Leiden, SBM, Spectral
+from algorithms import GAE, ARGA, Markov, Louvain, Leiden, SBM, Spectral
 
 
 def main():
@@ -37,8 +37,8 @@ def main():
 	parser.add_argument("--lr", type=float, default=0.001, help="Learning rate for Deep Graph Clustering")
 	parser.add_argument("--latent_dim", type=int, default=24, help="Latent dimension for Deep Graph Clustering")
 	parser.add_argument("--dropout", type=float, default=0.4, help="Dropout rate for Deep Graph Clustering")
-
-	parser.add_argument("--k", type=int, default=3, help="Discriminator training iterations for the ARGA model")
+	parser.add_argument("--use_pretrained", action="store_true", help="Use a pretrained model for Deep Graph Clustering")
+	parser.add_argument("--save_model", action="store_true", help="Save the model after training if use_pretrained is not specified")
 
 	# Output
 	parser.add_argument("--output_path", type=str, default="../output", help="Output path to save the results")
@@ -47,11 +47,11 @@ def main():
 	args = parser.parse_args()
 
 	if args.dataset:
-		assert args.dataset in ["karateclub", "cora", "citeseer", "pubmed"], "Invalid dataset"
+		assert args.dataset in ["karateclub", "cora", "citeseer", "dblp"], "Invalid dataset"
 		adj = np.load(f"../data/{args.dataset}/adj.npy")
 		features = np.load(f"../data/{args.dataset}/feat.npy").astype(np.float32)
 		labels = np.load(f"../data/{args.dataset}/label.npy")
-		graph = Graph(adj_matrix=adj, features=features, labels=labels)
+		graph = Graph(adj_matrix=adj, features=features, labels=labels, dataset_name=args.dataset)
 	else:
 		assert args.adj, "Adjacency matrix is required when dataset is not provided"
 		adj = np.loadtxt(args.adj, delimiter=",").astype(np.uint8)
@@ -59,12 +59,15 @@ def main():
 		labels = np.loadtxt(args.labels, delimiter=",").astype(np.uint32) if args.labels else None
 		graph = Graph(adj_matrix=adj, features=features, labels=labels)
 
+	if args.use_pretrained or args.save_model:  # ensures that the pretrained folder exists
+		os.mkdir("algorithms/deep/pretrained") if not os.path.exists("algorithms/deep/pretrained") else None
+
 	if args.algo == "gae":
-		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout)
-	elif args.algo == "adagae":
-		algo = AdaGAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout)
+		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
+	# elif args.algo == "mvgrl":
+	# 	algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "arga":
-		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout)
+		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "markov":
 		algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
 	elif args.algo == "louvain":

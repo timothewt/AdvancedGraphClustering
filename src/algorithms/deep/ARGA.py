@@ -22,19 +22,27 @@ class ARGA(DeepAlgorithm):
 	:type dropout: int
 	:param epochs: Number of epochs to run
 	:type epochs: int
+	:param k: Number of iterations to train the discriminator
+	:type k: int
+	:param use_pretrained: Boolean flag to indicate if pretrained model should be used
+	:type use_pretrained: bool
+	:param save_model: Boolean flag to indicate if the model should be saved after training
+	:type save_model: bool
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, k: int = 3):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, k: int = 3, use_pretrained: bool = True, save_model: bool = False):
 		"""Constructor method
 		"""
-		super(ARGA, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, dropout=dropout, epochs=epochs)
+		super(ARGA, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, dropout=dropout, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
 		self.k = k
 
 		self.encoder: GCNEncoder = GCNEncoder(in_channels=graph.features.shape[1], latent_dim=latent_dim, dropout=dropout)
-		self.model: ARGAModel = ARGAModel(encoder=self.encoder, discriminator=FCNet(in_channels=latent_dim, out_channels=1))
-		self.optimizer: torch.optim.Optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 		self.discriminator: FCNet = FCNet(in_channels=latent_dim, out_channels=1)
+		self.model: ARGAModel = ARGAModel(encoder=self.encoder, discriminator=self.discriminator)
+		self.optimizer: torch.optim.Optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 		self.discriminator_optimizer: torch.optim.Optimizer = torch.optim.Adam(self.discriminator.parameters(), lr=lr)
+		if self.use_pretrained:
+			self._load_pretrained()
 
 	def _train(self) -> None:
 		"""Trains the model

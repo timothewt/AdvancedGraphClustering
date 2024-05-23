@@ -18,9 +18,13 @@ class DeepAlgorithm(Algorithm):
 	:type dropout: int
 	:param epochs: Number of epochs to run
 	:type epochs: int
+	:param use_pretrained: Boolean flag to indicate if pretrained model should be used
+	:type use_pretrained: bool
+	:param save_model: Boolean flag to indicate if the model should be saved after training
+	:type save_model: bool
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, use_pretrained: bool = True, save_model: bool = False):
 		"""Constructor method
 		"""
 		super(DeepAlgorithm, self).__init__(graph)
@@ -29,6 +33,8 @@ class DeepAlgorithm(Algorithm):
 		self.latent_dim: int = latent_dim
 		self.dropout: int = dropout
 		self.epochs: int = epochs
+		self.use_pretrained = use_pretrained
+		self.save_model = save_model
 
 		self.model: torch.nn.Module = torch.nn.Module()
 
@@ -40,7 +46,10 @@ class DeepAlgorithm(Algorithm):
 	def run(self) -> None:
 		"""Trains the model and runs k-means clustering on the node embeddings.
 		"""
-		self._train()
+		if not self.use_pretrained:
+			self._train()
+			if self.save_model:
+				torch.save(self.model.state_dict(), f"algorithms/deep/pretrained/{self.__class__.__name__.lower()}_{self.graph.dataset_name}.pt")
 		self.model.eval()
 		z_np = self.model.encode(torch.tensor(self.graph.features, dtype=torch.float), torch.tensor(self.graph.edge_index, dtype=torch.long)).detach().numpy()
 		clusters = [
@@ -55,6 +64,15 @@ class DeepAlgorithm(Algorithm):
 				best_acc = acc
 				best_clustering = clustering
 		self.clusters = best_clustering
+
+	def _load_pretrained(self) -> None:
+		"""Loads the pretrained model
+		"""
+		try:
+			self.model.load_state_dict(torch.load(f"algorithms/deep/pretrained/{self.__class__.__name__.lower()}_{self.graph.dataset_name}.pt"))
+		except FileNotFoundError:
+			print("No pretrained model found.")
+			self.use_pretrained = False
 
 	def __str__(self):
 		"""Returns the string representation of the algorithm object

@@ -21,15 +21,21 @@ class GAE(DeepAlgorithm):
 	:type dropout: int
 	:param epochs: Number of epochs to run
 	:type epochs: int
+	:param use_pretrained: Boolean flag to indicate if pretrained model should be used
+	:type use_pretrained: bool
+	:param save_model: Boolean flag to indicate if the model should be saved after training
+	:type save_model: bool
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, use_pretrained: bool = True, save_model: bool = False):
 		"""Constructor method
 		"""
-		super(GAE, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, dropout=dropout, epochs=epochs)
+		super(GAE, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, dropout=dropout, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
 
 		self.encoder: GCNEncoder = GCNEncoder(in_channels=graph.features.shape[1], latent_dim=latent_dim, dropout=dropout)
 		self.model: GAEModel = GAEModel(encoder=self.encoder)
+		if self.use_pretrained:
+			self._load_pretrained()
 		self.optimizer: torch.optim.Optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 
 	def _train(self) -> None:
