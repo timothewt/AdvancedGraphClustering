@@ -52,7 +52,7 @@ py main.py --help
 ## Implemented Techniques
 - Traditional Clustering Techniques:
   - Spectral Clustering [1]
-  - Stochastic Block Models [2]
+  - Stochastic Block Models [2] (using PySBM from [9])
   - Markov Clustering Algorithm [3]
   - Louvain Algorithm [4]
   - Leiden Algorithm [5]
@@ -111,6 +111,8 @@ arXiv:1802.04407 [cs, stat].
 Contrastive multi-view representation learning on graphs.
 (arXiv:2006.05582), June 2020. doi: 10.48550/arXiv.2006.05582.
 URL http://arxiv.org/abs/2006.05582. arXiv:2006.05582 [cs, stat].
+
+[9] Funke T, Becker T (2019) Stochastic block models: A comparison of variants and inference methods. PLoS ONE 14(4): e0215296. https://doi.org/10.1371/journal.pone.0215296
 
 ## License
 This project is licensed under the MIT License.
