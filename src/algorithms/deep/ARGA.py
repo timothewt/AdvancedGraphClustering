@@ -18,8 +18,6 @@ class ARGA(DeepAlgorithm):
 	:type lr: float
 	:param latent_dim: Latent dimension
 	:type latent_dim: int
-	:param dropout: Dropout rate
-	:type dropout: int
 	:param epochs: Number of epochs to run
 	:type epochs: int
 	:param k: Number of iterations to train the discriminator
@@ -30,13 +28,13 @@ class ARGA(DeepAlgorithm):
 	:type save_model: bool
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, k: int = 3, use_pretrained: bool = True, save_model: bool = False):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, epochs: int = 100, k: int = 3, use_pretrained: bool = True, save_model: bool = False):
 		"""Constructor method
 		"""
-		super(ARGA, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, dropout=dropout, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
+		super(ARGA, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
 		self.k = k
 
-		self.encoder: GCNEncoder = GCNEncoder(in_channels=graph.features.shape[1], latent_dim=latent_dim, dropout=dropout)
+		self.encoder: GCNEncoder = GCNEncoder(in_channels=graph.features.shape[1], latent_dim=latent_dim)
 		self.discriminator: FCNet = FCNet(in_channels=latent_dim, out_channels=1)
 		self.model: ARGAModel = ARGAModel(encoder=self.encoder, discriminator=self.discriminator)
 		self.optimizer: torch.optim.Optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)

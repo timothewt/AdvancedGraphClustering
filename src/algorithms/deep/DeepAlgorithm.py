@@ -14,8 +14,6 @@ class DeepAlgorithm(Algorithm):
 	:type lr: float
 	:param latent_dim: Latent dimension
 	:type latent_dim: int
-	:param dropout: Dropout rate
-	:type dropout: int
 	:param epochs: Number of epochs to run
 	:type epochs: int
 	:param use_pretrained: Boolean flag to indicate if pretrained model should be used
@@ -24,14 +22,13 @@ class DeepAlgorithm(Algorithm):
 	:type save_model: bool
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, use_pretrained: bool = True, save_model: bool = False):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, epochs: int = 100, use_pretrained: bool = True, save_model: bool = False):
 		"""Constructor method
 		"""
 		super(DeepAlgorithm, self).__init__(graph)
 		self.num_clusters: int = num_clusters
 		self.lr: float = lr
 		self.latent_dim: int = latent_dim
-		self.dropout: int = dropout
 		self.epochs: int = epochs
 		self.use_pretrained = use_pretrained
 		self.save_model = save_model

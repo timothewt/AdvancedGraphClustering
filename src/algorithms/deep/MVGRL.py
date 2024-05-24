@@ -18,8 +18,6 @@ class MVGRL(DeepAlgorithm):
 	:type lr: float
 	:param latent_dim: Latent dimension
 	:type latent_dim: int
-	:param dropout: Dropout rate
-	:type dropout: int
 	:param epochs: Number of epochs to run
 	:type epochs: int
 	:param use_pretrained: Boolean flag to indicate if pretrained model should be used
@@ -28,12 +26,12 @@ class MVGRL(DeepAlgorithm):
 	:type save_model: bool
 	"""
 
-	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, dropout: int = .0, epochs: int = 100, use_pretrained: bool = True, save_model: bool = False):
+	def __init__(self, graph: Graph, num_clusters: int, lr: float = .001, latent_dim: int = 16, epochs: int = 100, use_pretrained: bool = True, save_model: bool = False):
 		"""Constructor method
 		"""
-		super(MVGRL, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, dropout=dropout, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
+		super(MVGRL, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
 
-		self.model: MVGRLModel = MVGRLModel(in_channels=graph.features.shape[1], latent_dim=latent_dim, dropout=dropout)
+		self.model: MVGRLModel = MVGRLModel(in_channels=graph.features.shape[1], latent_dim=latent_dim)
 		if self.use_pretrained:
 			self._load_pretrained()
 		self.optimizer: torch.optim.Optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
@@ -48,16 +46,18 @@ class MVGRL(DeepAlgorithm):
 	def _train(self) -> None:
 		"""Trains the model
 		"""
+		import matplotlib.pyplot as plt
 		corrupted_labels = torch.randperm(self.x_t.size(0))
 
 		true_labels = torch.ones(self.x_t.size(0) * 2, dtype=torch.float)
 		labels = torch.cat([true_labels, true_labels * 0], dim=-1)
 		criterion = nn.BCEWithLogitsLoss()
-		for _ in (pbar := trange(self.epochs, desc="GAE Training")):
+		accs = []
+		for _ in (pbar := trange(self.epochs, desc="MVGRL Training")):
 			self.model.train()
 			self.optimizer.zero_grad()
 			# Training the model
-			discriminator_output, _, _, _, _ = self.model(self.x_t, self.edge_index_t, self.diff_edge_index, self.diff_edge_weight, corrupted_labels)
+			discriminator_output, _, _ = self.model(self.x_t, self.edge_index_t, self.diff_edge_index, self.diff_edge_weight, corrupted_labels)
 			loss = criterion(discriminator_output, labels)
 			loss.backward()
 			self.optimizer.step()
@@ -65,7 +65,11 @@ class MVGRL(DeepAlgorithm):
 			self.model.eval()
 			self.clusters = get_clusters(self._encode_nodes(), self.num_clusters)
 			evaluation = self.evaluate()
+			accs.append(evaluation[0][1])
 			pbar.set_postfix({"Loss": loss.item(), **dict(evaluation)})
+		plt.plot(accs)
+		plt.title(f"Hidden size: {self.model.gcn_real.conv2.out_channels}")
+		plt.show()
 
 	def _encode_nodes(self) -> torch.tensor:
 		"""Encodes the node features using the model

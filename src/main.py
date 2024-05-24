@@ -37,7 +37,6 @@ def main():
 	parser.add_argument("--epochs", type=int, default=100, help="Number of epochs for Deep Graph Clustering")
 	parser.add_argument("--lr", type=float, default=0.001, help="Learning rate for Deep Graph Clustering")
 	parser.add_argument("--latent_dim", type=int, default=default_latent_dim[0], help="Latent dimension for Deep Graph Clustering")
-	parser.add_argument("--dropout", type=float, default=0.4, help="Dropout rate for Deep Graph Clustering")
 	parser.add_argument("--use_pretrained", action="store_true", help="Use a pretrained model for Deep Graph Clustering")
 	parser.add_argument("--save_model", action="store_true", help="Save the model after training if use_pretrained is not specified")
 
@@ -72,13 +71,13 @@ def main():
 	# Instantiating the algorithm
 	if args.algo == "gae":
 		args.latent_dim = default_latent_dim[0] if args.use_pretrained else args.latent_dim
-		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
+		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "arga":
 		args.latent_dim = default_latent_dim[1] if args.use_pretrained else args.latent_dim
-		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
+		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "mvgrl":
 		args.latent_dim = default_latent_dim[2] if args.use_pretrained else args.latent_dim
-		algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, dropout=args.dropout, use_pretrained=args.use_pretrained, save_model=args.save_model)
+		algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
 	elif args.algo == "markov":
 		algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
 	elif args.algo == "louvain":

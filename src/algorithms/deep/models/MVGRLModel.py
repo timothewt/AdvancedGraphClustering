@@ -17,10 +17,12 @@ class GCN(nn.Module):
 
 	def __init__(self, in_channels: int, out_channels: int):
 		super(GCN, self).__init__()
-		self.conv: GCNConv = GCNConv(in_channels, out_channels)
+		self.conv1: GCNConv = GCNConv(in_channels, out_channels)
+		self.conv2: GCNConv = GCNConv(out_channels, out_channels)
 		self.prelu: nn.PReLU = nn.PReLU()
 
-	def forward(self, x: torch.tensor, edge_index: torch.tensor, edge_weight: torch.tensor = None) -> tuple[torch.tensor, torch.tensor]:
+	def forward(self, x: torch.tensor, edge_index: torch.tensor, edge_weight: torch.tensor = None) -> tuple[
+		torch.tensor, torch.tensor]:
 		"""Forward pass
 
 		:param x: Input features
@@ -32,24 +34,53 @@ class GCN(nn.Module):
 		:return: Embeddings of the nodes at each GCN layer
 		:rtype: tuple[torch.tensor, torch.tensor]
 		"""
-		return self.prelu(self.conv(x, edge_index, edge_weight))
+		h1 = self.prelu(self.conv1(x, edge_index, edge_weight))
+		return h1, self.prelu(self.conv2(h1, edge_index, edge_weight))
 
 
-class Readout(nn.Module):
-	"""Readout function for a one-layer GCN model
+class Projection(nn.Module):
+	"""Projection layer
+
+	:param latent_dim: Dimension of the latent space
+	:type latent_dim: int
 	"""
-	def __init__(self):
-		super(Readout, self).__init__()
+
+	def __init__(self, latent_dim: int):
+		super(Projection, self).__init__()
+		self.fc1: nn.Linear = nn.Linear(latent_dim, latent_dim)
+		self.fc2: nn.Linear = nn.Linear(latent_dim, latent_dim)
+		self.prelu: nn.PReLU = nn.PReLU()
 
 	def forward(self, h: torch.tensor) -> torch.tensor:
-		"""Pooling layer
+		"""Forward pass
 
 		:param h: Node embeddings
 		:type h: torch.tensor
+		:return: Projected embeddings
+		:rtype: torch.tensor
+		"""
+		return self.prelu(self.fc2(self.prelu(self.fc1(h))))
+
+
+class Readout(nn.Module):
+	"""Readout function for a two-layer GCN model
+	"""
+
+	def __init__(self, latent_dim: int):
+		super(Readout, self).__init__()
+		self.fc = nn.Linear(latent_dim * 2, latent_dim)
+
+	def forward(self, h1: torch.tensor, h2: torch.tensor) -> torch.tensor:
+		"""Pooling layer
+
+		:param h1: Node embeddings at the first GCN layer
+		:type h1: torch.tensor
+		:param h2: Node embeddings at the second GCN layer
+		:type h2: torch.tensor
 		:return: Pooled embeddings
 		:rtype: torch.tensor
 		"""
-		return F.sigmoid(h.mean(dim=-2))
+		return F.sigmoid(self.fc(torch.cat([h1.mean(dim=-2), h2.mean(dim=-2)], dim=-1)))
 
 
 class Discriminator(nn.Module):
@@ -63,32 +94,34 @@ class Discriminator(nn.Module):
 		super(Discriminator, self).__init__()
 		self.bilinear: nn.Bilinear = nn.Bilinear(in_channels, in_channels, 1)
 
-	def forward(self, h1: torch.tensor, h2: torch.tensor, h3: torch.tensor, h4: torch.tensor, r1: torch.tensor, r2: torch.tensor) -> torch.tensor:
-		"""Forward pass
+	def forward(self, ha: torch.tensor, hb: torch.tensor, Ha: torch.tensor, Hb: torch.tensor, Ha_corrupted: torch.tensor, Hb_corrupted: torch.tensor) -> torch.tensor:
+		""" Forward pass of the discriminator computer the MI between the two representations of the views
 
-		:param h1: Embeddings of the nodes of the original view after the GCN_real layers
-		:type h1: torch.tensor
-		:param h2: Embeddings of the nodes of the diffused view after the GCN_diff layers
-		:type h2: torch.tensor
-		:param h3: Embeddings of the shuffled (corrupted) nodes of the original view after the GCN_real layers
-		:type h3: torch.tensor
-		:param h4: Embeddings of the shuffled (corrupted) nodes of the diffused view after the GCN_diff layers
-		:type h4: torch.tensor
-		:param r1: Output of the readout layer for the original view
-		:type r1: torch.tensor
-		:param r2: Output of the readout layer for the diffused view
-		:type r2: torch.tensor
-		:return: Discriminator output of shape for each gcn layer: positive (real) and negative (corrupted) pairs
+		:param ha: Graph embedding of the original view
+		:type ha: torch.tensor
+		:param hb: Graph embedding of the diffused view
+		:type hb: torch.tensor
+		:param Ha: Node embedding of the original view
+		:type Ha: torch.tensor
+		:param Hb: Node embedding of the diffused view
+		:type Hb: torch.tensor
+		:param Ha_corrupted: Node embedding of the corrupted original view
+		:type Ha_corrupted: torch.tensor
+		:param Hb_corrupted: Node embedding of the corrupted diffused view
+		:type Hb_corrupted: torch.tensor
+		:return: Discriminator output
 		:rtype: torch.tensor
 		"""
-		r1 = r1.expand_as(h1)
-		r2 = r2.expand_as(h2)
-		return torch.cat([
-			self.bilinear(h2, r1).squeeze(),  # diffused nodes vs real pooled, should be positive
-			self.bilinear(h1, r2).squeeze(),  # real nodes vs diffused pooled, should be positive
-			self.bilinear(h4, r1).squeeze(),  # corrupted diffused nodes vs real pooled, should be negative
-			self.bilinear(h3, r2).squeeze()  # corrupted real nodes vs diffused pooled, should be negative
-		], dim=-1)
+		ha = ha.expand_as(Ha)
+		hb = hb.expand_as(Hb)
+		return torch.cat(
+			[
+				self.bilinear(hb, Ha).squeeze(),
+				self.bilinear(ha, Hb).squeeze(),
+				self.bilinear(hb, Ha_corrupted).squeeze(),
+				self.bilinear(ha, Hb_corrupted).squeeze()
+			], dim=-1
+		)
 
 
 class MVGRLModel(nn.Module):
@@ -100,15 +133,17 @@ class MVGRLModel(nn.Module):
 	:type latent_dim: int
 	"""
 
-	def __init__(self, in_channels: int, latent_dim: int, dropout: int):
+	def __init__(self, in_channels: int, latent_dim: int):
 		super(MVGRLModel, self).__init__()
 		self.gcn_real: GCN = GCN(in_channels, latent_dim)
 		self.gcn_diff: GCN = GCN(in_channels, latent_dim)
-		self.readout: Readout = Readout()
+		self.readout: Readout = Readout(latent_dim)
+		self.projector_nodes: Projection = Projection(latent_dim)
+		self.projector_graph: Projection = Projection(latent_dim)
 		self.discriminator: Discriminator = Discriminator(latent_dim)
 
-	def forward(self, x: torch.tensor, edge_index: torch.tensor, diff_edge_index: torch.tensor, diff_edge_weight: torch.tensor, corrupted_idx: torch.tensor = None) -> tuple[torch.tensor, torch.tensor, torch.tensor, torch.tensor, torch.tensor]:
-		"""Forward pass
+	def forward(self, x: torch.tensor, edge_index: torch.tensor, diff_edge_index: torch.tensor, diff_edge_weight: torch.tensor, corrupted_idx: torch.tensor = None):
+		"""Forward pass, a=alpha (original view), b=beta (diffused view)
 
 		:param x: Input features
 		:type x: torch.tensor
@@ -120,18 +155,24 @@ class MVGRLModel(nn.Module):
 		:type diff_edge_weight: torch.tensor
 		:param corrupted_idx: Corrupted index tensor
 		:type corrupted_idx: torch.tensor
-		:return: Discriminator output, readout output of the original view, readout output of the diffused view, embeddings of the nodes of the original view, embeddings of the nodes of the diffused view
-		:rtype: tuple[torch.tensor, torch.tensor, torch.tensor, torch.tensor]
 		"""
-		h_real = self.gcn_real(x, edge_index)
-		h_diff = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
+		# Graph and node embeddings
+		h1a, h2a = self.gcn_real(x, edge_index)
+		h1b, h2b = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
+		Ha = self.projector_nodes(h2a)
+		Hb = self.projector_nodes(h2b)
+		ha = self.projector_graph(self.readout(h1a, h2a))
+		hb = self.projector_graph(self.readout(h1b, h2b))
+		# Corrupted features embeddings
 		if corrupted_idx is None:
 			corrupted_idx = torch.randperm(x.size(0))
-		h_real_corrupted = self.gcn_real(x[corrupted_idx], edge_index)
-		h_diff_corrupted = self.gcn_diff(x[corrupted_idx], diff_edge_index, diff_edge_weight)
-		r1 = self.readout(h_real)
-		r2 = self.readout(h_diff)
-		return self.discriminator(h_real, h_diff, h_real_corrupted, h_diff_corrupted, r1, r2), r1, r2, h_real, h_diff
+		h1a_corrupted, h2a_corrupted = self.gcn_real(x[corrupted_idx], edge_index)
+		h1b_corrupted, h2b_corrupted = self.gcn_diff(x[corrupted_idx], diff_edge_index, diff_edge_weight)
+		Ha_corrupted = self.projector_nodes(h2a_corrupted)
+		Hb_corrupted = self.projector_nodes(h2b_corrupted)
+		# Discriminator output
+		disc_out = self.discriminator(ha, hb, Ha, Hb, Ha_corrupted, Hb_corrupted)
+		return disc_out, ha + hb, Ha + Hb
 
 	def encode(self, x: torch.tensor, edge_index: torch.tensor, diff_edge_index: torch.tensor, diff_edge_weight: torch.tensor) -> torch.tensor:
 		"""Embedding function
@@ -147,6 +188,7 @@ class MVGRLModel(nn.Module):
 		:return: Node embeddings
 		:rtype: torch.tensor
 		"""
-		h_real = self.gcn_real(x, edge_index)
-		h_diff = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
-		return h_real + h_diff
+		_, h2a = self.gcn_real(x, edge_index)
+		_, h2b = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
+		return self.projector_nodes(h2a) + self.projector_nodes(h2b)
+

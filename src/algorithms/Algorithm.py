@@ -32,9 +32,9 @@ class Algorithm:
 		- Normalized Mutual Information
 		- Adjusted Rand Index
 		Unsupervised:
+		- Conductance
 		- Silhouette
-		- Normalized Cut
-		- ...
+		- Modularity
 		"""
 		metrics: list[(str, float)] = []
 		if self.graph.labels is not None:
@@ -45,15 +45,12 @@ class Algorithm:
 			metrics.append(("NMI", nmi))
 			metrics.append(("ARI", ari))
 
-		# TODO: unsupervised (silouhette, NCut, ...)
-	
-		conductance : float = self._get_conductance()
-		silouhette : float = self. _get_modularity()
-		internal_density : float = self._get_internal_density()
-		metrics.append(("Conductance",conductance))
-		metrics.append(("Modularity",silouhette))
-		metrics.append(("Internal density",internal_density))
-
+		conductance: float = self._get_conductance()
+		silouhette: float = self. _get_modularity()
+		internal_density: float = self._get_internal_density()
+		metrics.append(("Conductance", conductance))
+		metrics.append(("Modularity", silouhette))
+		metrics.append(("Internal density", internal_density))
 
 		return metrics
 
@@ -64,6 +61,17 @@ class Algorithm:
 		:rtype: list[int]
 		"""
 		return self.clusters
+
+	def get_communities(self) -> list[list[int]]:
+		""" Returns the clusters as communities (list of nodes list)
+
+		:return: Clusters as communities
+		:rtype: list[list[int]]
+		"""
+		communities = [[] for _ in range(max(self.clusters) + 1)]
+		for node, cluster in enumerate(self.clusters):
+			communities[cluster].append(node)
+		return communities
 
 	def _get_accuracy(self) -> float:
 		"""Returns the accuracy of the clustering
@@ -80,75 +88,39 @@ class Algorithm:
 
 		return np.mean(np.array(self.graph.labels) == np.array([label_mapping[cluster] for cluster in self.clusters]))
 
-	def _get_conductance(self)->float : 
+	def _get_conductance(self) -> float:
 		"""Returns the average conductance of the clustering
 
 		:return: Average conductance of the clustering
 		:rtype: float
 		"""
-		G = self.graph.nx_graph
-		# A revoir (se repète)
-		clusters = defaultdict(set)
-		for node, cluster_id in enumerate(self.clusters):
-			clusters[cluster_id].add(node)
-		partition = list(clusters.values())
-
 		conductances = []
-		for cluster in partition:
-			cut_size = nx.cut_size(G, cluster)
-
-			volume = sum(G.degree(node) for node in cluster)
-
-			if volume == 0:
-				conductance = 0
-			else:
-				conductance = cut_size / volume
-			
+		for cluster in self.get_communities():
+			cut_size = nx.cut_size(self.graph.nx_graph, cluster)
+			volume = sum(self.graph.nx_graph.degree(node) for node in cluster)
+			conductance = cut_size / volume if volume != 0 else 0
 			conductances.append(conductance)
-		#print("Conductances :",conductances)
+
 		return np.mean(conductances)
 
-	
-		
-
-	def _get_modularity(self)->float:
+	def _get_modularity(self) -> float:
 		"""Returns the Modularity of the clustering
 
 		:return: Modularity of the clustering
 		:rtype: float
 		"""
-		G = self.graph.nx_graph
-		
-		clusters = defaultdict(set)
-		for node, cluster_id in enumerate(self.clusters):
-			clusters[cluster_id].add(node)
-		partition = list(clusters.values())
-		modularity_score = modularity(G, partition)
-
-		return modularity_score
+		return modularity(self.graph.nx_graph, self.get_communities())
 	
 	def _get_internal_density(self) -> float:
-		"""Calculates the average internal density .
+		"""Calculates the average internal density.
 
-		Returns:
-			float: The average internal density of each cluster.
-			
+		:return: The average internal density of each cluster.
+		:rtype: float
 		"""
-
-		G = self.graph.nx_graph
-		
-		clusters = defaultdict(set)
-		for node, cluster_id in enumerate(self.clusters):
-			clusters[cluster_id].add(node)
-		partition = list(clusters.values())
-
 		densities = []
-
-		for cluster in partition:
+		for cluster in self.get_communities():
 			subgraph = self.graph.nx_graph.subgraph(cluster)
-
 			density = nx.density(subgraph)
-
 			densities.append(density)
 
 		return np.mean(densities)
