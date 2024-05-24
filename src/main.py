@@ -85,7 +85,7 @@ def main():
 	elif args.algo == "leiden":
 		algo = Leiden(graph)
 	elif args.algo == "sbm":
-		algo = SBM(graph)
+		algo = SBM(graph, num_clusters=args.num_clusters, iterations=args.iterations)
 	elif args.algo == "spectral":
 		algo = Spectral(graph, num_clusters=args.num_clusters)
 	else:

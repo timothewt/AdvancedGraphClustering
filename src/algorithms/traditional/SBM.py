@@ -18,14 +18,11 @@ class SBM(Algorithm):
 		self.iterations: int = iterations
 		self.num_clusters: int = num_clusters
 		self.graph = graph
-		
 
 	def run(self) -> None:
 		"""Runs the algorithm
 		"""
-		standard_partition = pysbm.NxPartition(
-		graph=self.graph.nx_graph, 
-		number_of_blocks=self.num_clusters)
+		standard_partition = pysbm.NxPartition(graph=self.graph.nx_graph, number_of_blocks=self.num_clusters)
 
 		standard_objective_function = pysbm.TraditionalUnnormalizedLogLikelyhood(is_directed=False)
 		standard_inference = pysbm.MetropolisHastingInference(self.graph, standard_objective_function, standard_partition)
