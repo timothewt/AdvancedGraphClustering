@@ -2,7 +2,7 @@ import sys
 from graph import Graph
 from algorithms.Algorithm import Algorithm
 
-sys.path.append('../library/')
+sys.path.append('..\\library\\')
 import pysbm
 
 
@@ -22,12 +22,11 @@ class SBM(Algorithm):
 		"""Runs the algorithm
 		"""
 		standard_partition = pysbm.NxPartition(graph=self.graph.nx_graph, number_of_blocks=self.num_clusters)
-
 		standard_objective_function = pysbm.TraditionalUnnormalizedLogLikelyhood(is_directed=False)
-		standard_inference = pysbm.MetropolisHastingInference(self.graph, standard_objective_function, standard_partition)
+		standard_inference = pysbm.MetropolisHastingInference(self.graph.nx_graph, standard_objective_function, standard_partition)
 		standard_inference.infer_stochastic_block_model(self.iterations)
 
-		self.clusters = [node[1] for node in sorted(standard_partition.partition.items())]
+		self.clusters = [node[1] for node in sorted(standard_inference.partition.partition.items())]
 
 	def __str__(self):
 		"""Returns the string representation of the algorithm object

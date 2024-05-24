@@ -14,7 +14,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 	# Algorithm
-	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use")
+	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use (gae, arga, mvgrl, markov, louvain, leiden, sbm, spectral)")
 
 	# Dataset
 	parser.add_argument("--dataset", type=str, help="Dataset to use (karateclub, cora, citeseer, pubmed). If not provided, use custom dataset")
@@ -25,11 +25,11 @@ def main():
 	parser.add_argument("--labels", type=str, help="Graph labels matrix as .csv (no header and index)")
 
 	# Markov clustering parameters
-	parser.add_argument("--expansion", type=float, default=2.0, help="Expand parameter for Markov clustering")
-	parser.add_argument("--inflation", type=float, default=2.0, help="Inflation parameter for Markov clustering")
-	parser.add_argument("--iterations", type=int, default=100, help="Number of iterations for Markov clustering")
+	parser.add_argument("--expansion", type=int, default=2, help="Expand parameter for Markov")
+	parser.add_argument("--inflation", type=int, default=2, help="Inflation parameter for Markov ")
+	parser.add_argument("--iterations", type=int, default=100, help="Number of iterations for Markov and SBM")
 
-	# Spectral clustering parameters
+	# For Deep, Spectral and SBM
 	parser.add_argument("--num_clusters", type=int, default=7, help="Number of clusters for Spectral clustering and Deep Graph Clustering")
 
 	# Deep parameters
@@ -48,10 +48,10 @@ def main():
 
 	# Loading the dataset
 	if args.dataset:
-		assert args.dataset in ["karateclub", "cora", "citeseer", "dblp"], "Invalid dataset"
-		adj = np.load(f"../data/{args.dataset}/adj.npy")
-		features = np.load(f"../data/{args.dataset}/feat.npy").astype(np.float32)
-		labels = np.load(f"../data/{args.dataset}/label.npy")
+		assert args.dataset.lower() in ["karateclub", "cora", "citeseer", "dblp"], "Invalid dataset"
+		adj = np.load(f"../data/{args.dataset.lower()}/adj.npy")
+		features = np.load(f"../data/{args.dataset.lower()}/feat.npy").astype(np.float32)
+		labels = np.load(f"../data/{args.dataset.lower()}/label.npy")
 		graph = Graph(adj_matrix=adj, features=features, labels=labels, dataset_name=args.dataset)
 	else:
 		assert args.adj, "Adjacency matrix is required when dataset is not provided"
@@ -69,24 +69,24 @@ def main():
 		args.latent_dim = default_latent_dim
 
 	# Instantiating the algorithm
-	if args.algo == "gae":
+	if (algo_name := args.algo.lower()) == "gae":
 		args.latent_dim = default_latent_dim[0] if args.use_pretrained else args.latent_dim
 		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	elif args.algo == "arga":
+	elif algo_name == "arga":
 		args.latent_dim = default_latent_dim[1] if args.use_pretrained else args.latent_dim
 		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	elif args.algo == "mvgrl":
+	elif algo_name == "mvgrl":
 		args.latent_dim = default_latent_dim[2] if args.use_pretrained else args.latent_dim
 		algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=args.latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	elif args.algo == "markov":
+	elif algo_name == "markov":
 		algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
-	elif args.algo == "louvain":
+	elif algo_name == "louvain":
 		algo = Louvain(graph)
-	elif args.algo == "leiden":
+	elif algo_name == "leiden":
 		algo = Leiden(graph)
-	elif args.algo == "sbm":
+	elif algo_name == "sbm":
 		algo = SBM(graph, num_clusters=args.num_clusters, iterations=args.iterations)
-	elif args.algo == "spectral":
+	elif algo_name == "spectral":
 		algo = Spectral(graph, num_clusters=args.num_clusters)
 	else:
 		raise ValueError("Invalid algorithm")

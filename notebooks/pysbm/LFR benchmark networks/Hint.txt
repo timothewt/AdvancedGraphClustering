@@ -1,1 +1,0 @@
-If needed download the original C implementation of LFR and generate the data.

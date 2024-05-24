@@ -32,9 +32,8 @@ pip install -r requirements.txt
 
 ## Usage
 
-To run the implemented clustering techniques, execute the respective scripts provided in the project. Detailed usage instructions for each technique can be found in their corresponding documentation on the GitHub page.
-
-Note: For Deep Graph Clustering techniques, the hyperparameters are only relevant when a pre-trained model is not used.
+To run the implemented clustering techniques, execute the respective scripts provided in the project. Detailed usage instructions for each technique can be found in their corresponding documentation on the GitHub page.<br/>
+The code can also be used as a library by importing the algorithms from the `src/` directory.
 
 Example usage:
 
@@ -48,6 +47,8 @@ Use the `--help` flag to see the available options for the script (hyperparamete
 ```bash
 py main.py --help
 ```
+
+Note: For Deep Graph Clustering techniques, the hyperparameters are only relevant when a pre-trained model is not used.
 
 ## Implemented Techniques
 - Traditional Clustering Techniques:
@@ -115,4 +116,4 @@ URL http://arxiv.org/abs/2006.05582. arXiv:2006.05582 [cs, stat].
 [9] Funke T, Becker T (2019) Stochastic block models: A comparison of variants and inference methods. PLoS ONE 14(4): e0215296. https://doi.org/10.1371/journal.pone.0215296
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. Please cite the repository if you use the code.

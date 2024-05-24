@@ -30,6 +30,7 @@ class MVGRL(DeepAlgorithm):
 		"""Constructor method
 		"""
 		super(MVGRL, self).__init__(graph, num_clusters=num_clusters, lr=lr, latent_dim=latent_dim, epochs=epochs, use_pretrained=use_pretrained, save_model=save_model)
+		self.evaluation_clustering_tries = 400
 
 		self.model: MVGRLModel = MVGRLModel(in_channels=graph.features.shape[1], latent_dim=latent_dim)
 		if self.use_pretrained:
@@ -68,7 +69,6 @@ class MVGRL(DeepAlgorithm):
 			accs.append(evaluation[0][1])
 			pbar.set_postfix({"Loss": loss.item(), **dict(evaluation)})
 		plt.plot(accs)
-		plt.title(f"Hidden size: {self.model.gcn_real.conv2.out_channels}")
 		plt.show()
 
 	def _encode_nodes(self) -> torch.tensor:

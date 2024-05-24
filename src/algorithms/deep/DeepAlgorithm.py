@@ -38,6 +38,8 @@ class DeepAlgorithm(Algorithm):
 
 		self.model: torch.nn.Module = torch.nn.Module()
 
+		self.evaluation_clustering_tries: int = 100
+
 	def _train(self) -> None:
 		"""Trains the model, to be implemented by subclasses
 		"""
@@ -61,14 +63,13 @@ class DeepAlgorithm(Algorithm):
 		self.model.eval()
 		z_np = self._encode_nodes()
 		clusters = [
-			get_clusters(z_np, self.num_clusters) for _ in range(10)
-		]  # Run clustering 10 times and get the best clustering
+			get_clusters(z_np, self.num_clusters) for _ in range(self.evaluation_clustering_tries)
+		]  # Run clustering several times and get the best clustering
 		best_clustering = None
 		best_acc = 0
 		for clustering in clusters:
 			self.clusters = clustering
-			acc = self._get_accuracy()
-			if acc > best_acc:
+			if (acc := self._get_accuracy()) > best_acc:
 				best_acc = acc
 				best_clustering = clustering
 		self.clusters = best_clustering

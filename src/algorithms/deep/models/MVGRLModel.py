@@ -18,11 +18,11 @@ class GCN(nn.Module):
 	def __init__(self, in_channels: int, out_channels: int):
 		super(GCN, self).__init__()
 		self.conv1: GCNConv = GCNConv(in_channels, out_channels)
+		self.prelu1: nn.PReLU = nn.PReLU()
 		self.conv2: GCNConv = GCNConv(out_channels, out_channels)
-		self.prelu: nn.PReLU = nn.PReLU()
+		self.prelu2: nn.PReLU = nn.PReLU()
 
-	def forward(self, x: torch.tensor, edge_index: torch.tensor, edge_weight: torch.tensor = None) -> tuple[
-		torch.tensor, torch.tensor]:
+	def forward(self, x: torch.tensor, edge_index: torch.tensor, edge_weight: torch.tensor = None) -> torch.tensor:
 		"""Forward pass
 
 		:param x: Input features
@@ -32,10 +32,10 @@ class GCN(nn.Module):
 		:param edge_weight: Edge weight tensor (if any)
 		:type edge_weight: torch.tensor
 		:return: Embeddings of the nodes at each GCN layer
-		:rtype: tuple[torch.tensor, torch.tensor]
+		:rtype: torch.tensor
 		"""
-		h1 = self.prelu(self.conv1(x, edge_index, edge_weight))
-		return h1, self.prelu(self.conv2(h1, edge_index, edge_weight))
+		h1 = self.prelu1(self.conv1(x, edge_index, edge_weight))
+		return h1, self.prelu2(self.conv2(h1, edge_index, edge_weight))
 
 
 class Projection(nn.Module):
@@ -47,8 +47,7 @@ class Projection(nn.Module):
 
 	def __init__(self, latent_dim: int):
 		super(Projection, self).__init__()
-		self.fc1: nn.Linear = nn.Linear(latent_dim, latent_dim)
-		self.fc2: nn.Linear = nn.Linear(latent_dim, latent_dim)
+		self.fc: nn.Linear = nn.Linear(latent_dim, latent_dim)
 		self.prelu: nn.PReLU = nn.PReLU()
 
 	def forward(self, h: torch.tensor) -> torch.tensor:
@@ -59,24 +58,22 @@ class Projection(nn.Module):
 		:return: Projected embeddings
 		:rtype: torch.tensor
 		"""
-		return self.prelu(self.fc2(self.prelu(self.fc1(h))))
+		return self.prelu(self.fc(h))
 
 
 class Readout(nn.Module):
-	"""Readout function for a two-layer GCN model
+	"""Readout function for a one-layer GCN model
 	"""
 
 	def __init__(self, latent_dim: int):
 		super(Readout, self).__init__()
-		self.fc = nn.Linear(latent_dim * 2, latent_dim)
+		self.fc: nn.Linear = nn.Linear(latent_dim * 2, latent_dim)
 
 	def forward(self, h1: torch.tensor, h2: torch.tensor) -> torch.tensor:
 		"""Pooling layer
 
-		:param h1: Node embeddings at the first GCN layer
-		:type h1: torch.tensor
-		:param h2: Node embeddings at the second GCN layer
-		:type h2: torch.tensor
+		:param h: Node embeddings at the first GCN layer
+		:type h: torch.tensor
 		:return: Pooled embeddings
 		:rtype: torch.tensor
 		"""
@@ -138,8 +135,8 @@ class MVGRLModel(nn.Module):
 		self.gcn_real: GCN = GCN(in_channels, latent_dim)
 		self.gcn_diff: GCN = GCN(in_channels, latent_dim)
 		self.readout: Readout = Readout(latent_dim)
-		self.projector_nodes: Projection = Projection(latent_dim)
-		self.projector_graph: Projection = Projection(latent_dim)
+		self.projector_nodes: Projection = nn.Identity()  # Projection(latent_dim)
+		self.projector_graph: Projection = nn.Identity()  # Projection(latent_dim)
 		self.discriminator: Discriminator = Discriminator(latent_dim)
 
 	def forward(self, x: torch.tensor, edge_index: torch.tensor, diff_edge_index: torch.tensor, diff_edge_weight: torch.tensor, corrupted_idx: torch.tensor = None):
@@ -157,19 +154,19 @@ class MVGRLModel(nn.Module):
 		:type corrupted_idx: torch.tensor
 		"""
 		# Graph and node embeddings
-		h1a, h2a = self.gcn_real(x, edge_index)
-		h1b, h2b = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
-		Ha = self.projector_nodes(h2a)
-		Hb = self.projector_nodes(h2b)
-		ha = self.projector_graph(self.readout(h1a, h2a))
-		hb = self.projector_graph(self.readout(h1b, h2b))
+		ha1, ha2 = self.gcn_real(x, edge_index)
+		hb1, hb2 = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
+		Ha = self.projector_nodes(ha2)
+		Hb = self.projector_nodes(hb2)
+		ha = self.projector_graph(self.readout(ha1, ha2))
+		hb = self.projector_graph(self.readout(hb1, hb2))
 		# Corrupted features embeddings
 		if corrupted_idx is None:
 			corrupted_idx = torch.randperm(x.size(0))
-		h1a_corrupted, h2a_corrupted = self.gcn_real(x[corrupted_idx], edge_index)
-		h1b_corrupted, h2b_corrupted = self.gcn_diff(x[corrupted_idx], diff_edge_index, diff_edge_weight)
-		Ha_corrupted = self.projector_nodes(h2a_corrupted)
-		Hb_corrupted = self.projector_nodes(h2b_corrupted)
+		_, ha2_corrupted = self.gcn_real(x[corrupted_idx], edge_index)
+		_, hb2_corrupted = self.gcn_diff(x[corrupted_idx], diff_edge_index, diff_edge_weight)
+		Ha_corrupted = self.projector_nodes(ha2_corrupted)
+		Hb_corrupted = self.projector_nodes(hb2_corrupted)
 		# Discriminator output
 		disc_out = self.discriminator(ha, hb, Ha, Hb, Ha_corrupted, Hb_corrupted)
 		return disc_out, ha + hb, Ha + Hb
@@ -188,7 +185,7 @@ class MVGRLModel(nn.Module):
 		:return: Node embeddings
 		:rtype: torch.tensor
 		"""
-		_, h2a = self.gcn_real(x, edge_index)
-		_, h2b = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
-		return self.projector_nodes(h2a) + self.projector_nodes(h2b)
+		_, ha2 = self.gcn_real(x, edge_index)
+		_, hb2 = self.gcn_diff(x, diff_edge_index, diff_edge_weight)
+		return self.projector_nodes(ha2) + self.projector_nodes(hb2)
 
