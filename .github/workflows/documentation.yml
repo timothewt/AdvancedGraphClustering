@@ -15,7 +15,7 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install sphinx furo sphinx-autodoc typeguard sphinx-rtd-theme sphinxcontrib-apidoc sphinxcontrib-napoleon
       - name: Sphinx build
         run: |
           cd docs/
