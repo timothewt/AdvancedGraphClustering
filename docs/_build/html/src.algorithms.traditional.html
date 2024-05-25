@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.algorithms.traditional package &mdash; Advanced Graph Clustering 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Advanced Graph Clustering
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src.algorithms.traditional package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional.Leiden">src.algorithms.traditional.Leiden module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Leiden.Leiden"><code class="docutils literal notranslate"><span class="pre">Leiden</span></code></a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Leiden.Leiden.run"><code class="docutils literal notranslate"><span class="pre">Leiden.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional.Louvain">src.algorithms.traditional.Louvain module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Louvain.Louvain"><code class="docutils literal notranslate"><span class="pre">Louvain</span></code></a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Louvain.Louvain.run"><code class="docutils literal notranslate"><span class="pre">Louvain.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional.Markov">src.algorithms.traditional.Markov module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Markov.Markov"><code class="docutils literal notranslate"><span class="pre">Markov</span></code></a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Markov.Markov.run"><code class="docutils literal notranslate"><span class="pre">Markov.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional.SBM">src.algorithms.traditional.SBM module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.SBM.SBM"><code class="docutils literal notranslate"><span class="pre">SBM</span></code></a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.SBM.SBM.run"><code class="docutils literal notranslate"><span class="pre">SBM.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional.Spectral">src.algorithms.traditional.Spectral module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Spectral.Spectral"><code class="docutils literal notranslate"><span class="pre">Spectral</span></code></a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.Spectral.Spectral.run"><code class="docutils literal notranslate"><span class="pre">Spectral.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional.utils">src.algorithms.traditional.utils module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.traditional.utils.extract_clusters_from_communities_list"><code class="docutils literal notranslate"><span class="pre">extract_clusters_from_communities_list()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms.traditional">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Advanced Graph Clustering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">src.algorithms.traditional package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/src.algorithms.traditional.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="src-algorithms-traditional-package">
+<h1>src.algorithms.traditional package<a class="headerlink" href="#src-algorithms-traditional-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-src.algorithms.traditional.Leiden">
+<span id="src-algorithms-traditional-leiden-module"></span><h2>src.algorithms.traditional.Leiden module<a class="headerlink" href="#module-src.algorithms.traditional.Leiden" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Leiden.Leiden">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.algorithms.traditional.Leiden.</span></span><span class="sig-name descname"><span class="pre">Leiden</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><span class="pre">Graph</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms/traditional/Leiden.html#Leiden"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Leiden.Leiden" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
+<p>Leiden clustering algorithm</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Leiden.Leiden.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/algorithms/traditional/Leiden.html#Leiden.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Leiden.Leiden.run" title="Link to this definition"></a></dt>
+<dd><p>Runs the algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms.traditional.Louvain">
+<span id="src-algorithms-traditional-louvain-module"></span><h2>src.algorithms.traditional.Louvain module<a class="headerlink" href="#module-src.algorithms.traditional.Louvain" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Louvain.Louvain">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.algorithms.traditional.Louvain.</span></span><span class="sig-name descname"><span class="pre">Louvain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><span class="pre">Graph</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms/traditional/Louvain.html#Louvain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Louvain.Louvain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
+<p>Louvain clustering algorithm</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Louvain.Louvain.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/algorithms/traditional/Louvain.html#Louvain.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Louvain.Louvain.run" title="Link to this definition"></a></dt>
+<dd><p>Runs the algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms.traditional.Markov">
+<span id="src-algorithms-traditional-markov-module"></span><h2>src.algorithms.traditional.Markov module<a class="headerlink" href="#module-src.algorithms.traditional.Markov" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Markov.Markov">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.algorithms.traditional.Markov.</span></span><span class="sig-name descname"><span class="pre">Markov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><span class="pre">Graph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expansion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms/traditional/Markov.html#Markov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Markov.Markov" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
+<p>Markov clustering algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><em>Graph</em></a>) – Graph object</p></li>
+<li><p><strong>expansion</strong> (<em>int</em>) – Cluster expansion factor</p></li>
+<li><p><strong>inflation</strong> (<em>int</em>) – Cluster inflation factor</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – Maximum number of iterations</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Markov.Markov.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/algorithms/traditional/Markov.html#Markov.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Markov.Markov.run" title="Link to this definition"></a></dt>
+<dd><p>Runs the algorithm with the given parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms.traditional.SBM">
+<span id="src-algorithms-traditional-sbm-module"></span><h2>src.algorithms.traditional.SBM module<a class="headerlink" href="#module-src.algorithms.traditional.SBM" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.algorithms.traditional.SBM.SBM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.algorithms.traditional.SBM.</span></span><span class="sig-name descname"><span class="pre">SBM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><span class="pre">Graph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms/traditional/SBM.html#SBM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.SBM.SBM" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
+<p>Stochastic block model clustering algorithm</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.traditional.SBM.SBM.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/algorithms/traditional/SBM.html#SBM.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.SBM.SBM.run" title="Link to this definition"></a></dt>
+<dd><p>Runs the algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms.traditional.Spectral">
+<span id="src-algorithms-traditional-spectral-module"></span><h2>src.algorithms.traditional.Spectral module<a class="headerlink" href="#module-src.algorithms.traditional.Spectral" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Spectral.Spectral">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.algorithms.traditional.Spectral.</span></span><span class="sig-name descname"><span class="pre">Spectral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><span class="pre">Graph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_clusters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms/traditional/Spectral.html#Spectral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Spectral.Spectral" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Algorithm</span></code></p>
+<p>Spectral clustering algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><em>Graph</em></a>) – Graph object</p></li>
+<li><p><strong>num_clusters</strong> (<em>int</em>) – Maximum number of clusters to form</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.traditional.Spectral.Spectral.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/algorithms/traditional/Spectral.html#Spectral.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.Spectral.Spectral.run" title="Link to this definition"></a></dt>
+<dd><p>Runs the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_clusters</strong> (<em>int</em>) – Maximum number of clusters to form</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms.traditional.utils">
+<span id="src-algorithms-traditional-utils-module"></span><h2>src.algorithms.traditional.utils module<a class="headerlink" href="#module-src.algorithms.traditional.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.algorithms.traditional.utils.extract_clusters_from_communities_list">
+<span class="sig-prename descclassname"><span class="pre">src.algorithms.traditional.utils.</span></span><span class="sig-name descname"><span class="pre">extract_clusters_from_communities_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">communities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/src/algorithms/traditional/utils.html#extract_clusters_from_communities_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.traditional.utils.extract_clusters_from_communities_list" title="Link to this definition"></a></dt>
+<dd><p>Extracts clusters from the output of the cdlib library / markov clustering algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>communities</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of communities (list of nodes)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of clusters</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms.traditional">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.algorithms.traditional" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Timothe Watteau, Joaquim Jusseau, Aubin Bonnefoy, Simon Illouz-Laurent.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.algorithms package &mdash; Advanced Graph Clustering 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=2709fde1"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Advanced Graph Clustering
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">src.algorithms package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-src.algorithms.Algorithm">src.algorithms.Algorithm module</a><ul>
+<li><a class="reference internal" href="#src.algorithms.Algorithm.Algorithm"><code class="docutils literal notranslate"><span class="pre">Algorithm</span></code></a><ul>
+<li><a class="reference internal" href="#src.algorithms.Algorithm.Algorithm.evaluate"><code class="docutils literal notranslate"><span class="pre">Algorithm.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#src.algorithms.Algorithm.Algorithm.get_clusters"><code class="docutils literal notranslate"><span class="pre">Algorithm.get_clusters()</span></code></a></li>
+<li><a class="reference internal" href="#src.algorithms.Algorithm.Algorithm.get_communities"><code class="docutils literal notranslate"><span class="pre">Algorithm.get_communities()</span></code></a></li>
+<li><a class="reference internal" href="#src.algorithms.Algorithm.Algorithm.run"><code class="docutils literal notranslate"><span class="pre">Algorithm.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.algorithms">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Advanced Graph Clustering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">src.algorithms package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/src.algorithms.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="src-algorithms-package">
+<h1>src.algorithms package<a class="headerlink" href="#src-algorithms-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="src.algorithms.deep.html">src.algorithms.deep package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.models.html">src.algorithms.deep.models package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.deep.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.deep.models.html#module-src.algorithms.deep.models.FCNet">src.algorithms.deep.models.FCNet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.deep.models.html#module-src.algorithms.deep.models.GCNEncoder">src.algorithms.deep.models.GCNEncoder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.deep.models.html#module-src.algorithms.deep.models.MVGRLModel">src.algorithms.deep.models.MVGRLModel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.deep.models.html#module-src.algorithms.deep.models">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#module-src.algorithms.deep.ARGA">src.algorithms.deep.ARGA module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.ARGA.ARGA"><code class="docutils literal notranslate"><span class="pre">ARGA</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#module-src.algorithms.deep.DeepAlgorithm">src.algorithms.deep.DeepAlgorithm module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.DeepAlgorithm.DeepAlgorithm"><code class="docutils literal notranslate"><span class="pre">DeepAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.DeepAlgorithm.DeepAlgorithm.run"><code class="docutils literal notranslate"><span class="pre">DeepAlgorithm.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#module-src.algorithms.deep.GAE">src.algorithms.deep.GAE module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.GAE.GAE"><code class="docutils literal notranslate"><span class="pre">GAE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#module-src.algorithms.deep.MVGRL">src.algorithms.deep.MVGRL module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.MVGRL.MVGRL"><code class="docutils literal notranslate"><span class="pre">MVGRL</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#module-src.algorithms.deep.utils">src.algorithms.deep.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.utils.compute_diffusion_matrix"><code class="docutils literal notranslate"><span class="pre">compute_diffusion_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.deep.html#src.algorithms.deep.utils.get_clusters"><code class="docutils literal notranslate"><span class="pre">get_clusters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.deep.html#module-src.algorithms.deep">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src.algorithms.traditional.html">src.algorithms.traditional package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional.Leiden">src.algorithms.traditional.Leiden module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Leiden.Leiden"><code class="docutils literal notranslate"><span class="pre">Leiden</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Leiden.Leiden.run"><code class="docutils literal notranslate"><span class="pre">Leiden.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional.Louvain">src.algorithms.traditional.Louvain module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Louvain.Louvain"><code class="docutils literal notranslate"><span class="pre">Louvain</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Louvain.Louvain.run"><code class="docutils literal notranslate"><span class="pre">Louvain.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional.Markov">src.algorithms.traditional.Markov module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Markov.Markov"><code class="docutils literal notranslate"><span class="pre">Markov</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Markov.Markov.run"><code class="docutils literal notranslate"><span class="pre">Markov.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional.SBM">src.algorithms.traditional.SBM module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.SBM.SBM"><code class="docutils literal notranslate"><span class="pre">SBM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.SBM.SBM.run"><code class="docutils literal notranslate"><span class="pre">SBM.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional.Spectral">src.algorithms.traditional.Spectral module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Spectral.Spectral"><code class="docutils literal notranslate"><span class="pre">Spectral</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.Spectral.Spectral.run"><code class="docutils literal notranslate"><span class="pre">Spectral.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional.utils">src.algorithms.traditional.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="src.algorithms.traditional.html#src.algorithms.traditional.utils.extract_clusters_from_communities_list"><code class="docutils literal notranslate"><span class="pre">extract_clusters_from_communities_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="src.algorithms.traditional.html#module-src.algorithms.traditional">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-src.algorithms.Algorithm">
+<span id="src-algorithms-algorithm-module"></span><h2>src.algorithms.Algorithm module<a class="headerlink" href="#module-src.algorithms.Algorithm" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.algorithms.Algorithm.Algorithm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.algorithms.Algorithm.</span></span><span class="sig-name descname"><span class="pre">Algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><span class="pre">Graph</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms/Algorithm.html#Algorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.Algorithm.Algorithm" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for graph clustering algorithms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> (<a class="reference internal" href="src.graph.html#src.graph.Graph.Graph" title="src.graph.Graph.Graph"><em>Graph</em></a>) – Graph object</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.Algorithm.Algorithm.evaluate">
+<span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/src/algorithms/Algorithm.html#Algorithm.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.Algorithm.Algorithm.evaluate" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the clustering through various supervised (if labels provided in the Graph object) and unsupervised metrics:
+Supervised:
+- Accuracy
+- Normalized Mutual Information
+- Adjusted Rand Index
+Unsupervised:
+- Conductance
+- Silhouette
+- Modularity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.Algorithm.Algorithm.get_clusters">
+<span class="sig-name descname"><span class="pre">get_clusters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/src/algorithms/Algorithm.html#Algorithm.get_clusters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.Algorithm.Algorithm.get_clusters" title="Link to this definition"></a></dt>
+<dd><p>Returns the clusters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Clusters</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.Algorithm.Algorithm.get_communities">
+<span class="sig-name descname"><span class="pre">get_communities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/src/algorithms/Algorithm.html#Algorithm.get_communities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.Algorithm.Algorithm.get_communities" title="Link to this definition"></a></dt>
+<dd><p>Returns the clusters as communities (list of nodes list)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Clusters as communities</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[list[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.algorithms.Algorithm.Algorithm.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/algorithms/Algorithm.html#Algorithm.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.Algorithm.Algorithm.run" title="Link to this definition"></a></dt>
+<dd><p>Runs the algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-src.algorithms">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.algorithms" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Timothe Watteau, Joaquim Jusseau, Aubin Bonnefoy, Simon Illouz-Laurent.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

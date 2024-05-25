@@ -10,10 +10,9 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath('../library/'))
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'src')))
 sys.path.insert(0, os.path.abspath(os.path.join('..', 'src')))
-sys.path.insert(0, os.path.abspath(os.path.join('src')))
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(os.path.join('src')))
 
 project = 'Advanced Graph Clustering'
 author = 'Timothe Watteau, Joaquim Jusseau, Aubin Bonnefoy, Simon Illouz-Laurent'
@@ -26,13 +25,7 @@ release = '0.1'
 extensions = [
 	"sphinx.ext.autodoc",
 	"sphinx.ext.viewcode",
-	"sphinx.ext.napoleon",
-	"sphinx.ext.todo",
-	"sphinx.ext.autosummary",
-	"sphinx.ext.autosectionlabel",
-	"sphinx.ext.intersphinx",
-	"sphinx.ext.githubpages",
-	"sphinx.ext.mathjax",
+    'sphinx.ext.autosummary',  # Create neat summary tables
 	"sphinx_rtd_theme"
 ]
 
