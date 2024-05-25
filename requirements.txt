@@ -9,6 +9,7 @@ notebook>=7.1.2
 numpy>=1.26.4
 pandas>=2.2.1
 prettytable>=3.10.0
+sphinx_rtd_theme>=2.0.0
 sphinx>=7.3.7
 scikit-learn>=1.4.2
 torch>=2.2.1
