@@ -67,12 +67,12 @@ Note: For Deep Graph Clustering techniques, the hyperparameters are only relevan
 The project uses several benchmark datasets for evaluating the clustering techniques.
 The datasets are available in the `data/` directory and include the following:
 
-| Dataset    | Nodes  | Edges | Features  | Classes | Description |
-|------------|--------|-------|-----------|---------|-------------|
-| Cora       | 2708   | 5429  | 1433      | 7       | Citation network |
-| Citeseer   | 3327   | 4732  | 3703      | 6       | Citation network |
-| DBLP       | 4057   | 3528  | 334       | 4       | Co-authorship network |
-| Karateclub | 34     | 78    | 34        | 4       | Social network |
+| Dataset    | Nodes | Edges | Features | Classes | Description      |
+|------------|-------|-------|----------|---------|------------------|
+| Cora       | 2708  | 5429  | 1433     | 7       | Citation network |
+| Citeseer   | 3327  | 4732  | 3703     | 6       | Citation network |
+| UAT        | 1190  | 13599 | 239      | 4       | Aviation Data    |
+| Karateclub | 34    | 78    | 34       | 4       | Social network   |
 
 ## References
 [1] Ulrike von Luxburg. A tutorial on spectral clustering. (arXiv:0711.0189), November 2007. doi:

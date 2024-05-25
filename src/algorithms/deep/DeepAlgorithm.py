@@ -62,6 +62,25 @@ class DeepAlgorithm(Algorithm):
 				torch.save(self.model.state_dict(), f"algorithms/deep/pretrained/{self.__class__.__name__.lower()}_{self.graph.dataset_name}.pt")
 		self.model.eval()
 		z_np = self._encode_nodes()
+		from sklearn.manifold import TSNE
+		import matplotlib.pyplot as plt
+
+		z_np_tsne = TSNE(n_components=2).fit_transform(z_np)
+		plt.scatter(z_np_tsne[:, 0], z_np_tsne[:, 1], c=self.graph.labels, cmap="tab10", s=3)
+		plt.axis("off")
+		plt.tight_layout()
+		plt.savefig(fr"C:\Users\Timothe\Desktop\DS50\figures\latent_spaces\{self.__class__.__name__.lower()}_{self.graph.dataset_name}.png", dpi=300)
+		plt.show()
+
+		# raw_tsne = TSNE(n_components=2).fit_transform(self.graph.features)
+		# import numpy as np
+		# plt.scatter(raw_tsne[:, 0] + np.random.randn(raw_tsne.shape[0]) * 5, raw_tsne[:, 1] + np.random.randn(raw_tsne.shape[0]) * 5, c=self.graph.labels, cmap="tab10", s=3)
+		# # plt.scatter(raw_tsne[:, 0], raw_tsne[:, 1], c=self.graph.labels, cmap="tab10", s=3)
+		# plt.axis("off")
+		# plt.tight_layout()
+		# plt.savefig(fr"C:\Users\Timothe\Desktop\DS50\figures\latent_spaces\raw_{self.graph.dataset_name}.png", dpi=300)
+		# plt.show()
+
 		clusters = [
 			get_clusters(z_np, self.num_clusters) for _ in range(self.evaluation_clustering_tries)
 		]  # Run clustering several times and get the best clustering

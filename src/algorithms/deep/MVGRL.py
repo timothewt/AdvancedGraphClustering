@@ -47,13 +47,11 @@ class MVGRL(DeepAlgorithm):
 	def _train(self) -> None:
 		"""Trains the model
 		"""
-		import matplotlib.pyplot as plt
 		corrupted_labels = torch.randperm(self.x_t.size(0))
 
 		true_labels = torch.ones(self.x_t.size(0) * 2, dtype=torch.float)
 		labels = torch.cat([true_labels, true_labels * 0], dim=-1)
 		criterion = nn.BCEWithLogitsLoss()
-		accs = []
 		for _ in (pbar := trange(self.epochs, desc="MVGRL Training")):
 			self.model.train()
 			self.optimizer.zero_grad()
@@ -66,10 +64,7 @@ class MVGRL(DeepAlgorithm):
 			self.model.eval()
 			self.clusters = get_clusters(self._encode_nodes(), self.num_clusters)
 			evaluation = self.evaluate()
-			accs.append(evaluation[0][1])
 			pbar.set_postfix({"Loss": loss.item(), **dict(evaluation)})
-		plt.plot(accs)
-		plt.show()
 
 	def _encode_nodes(self) -> torch.tensor:
 		"""Encodes the node features using the model
