@@ -65,29 +65,30 @@ def main():
 		os.mkdir("algorithms/deep/pretrained") if not os.path.exists("algorithms/deep/pretrained") else None
 
 	# Instantiating the algorithm
-	if (algo_name := args.algo.lower()) == "gae":
-		latent_dim = default_latent_dim[0] if args.use_pretrained else args.latent_dim
-		algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	elif algo_name == "arga":
-		latent_dim = default_latent_dim[1] if args.use_pretrained else args.latent_dim
-		algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	elif algo_name == "mvgrl":
-		latent_dim = default_latent_dim[2] if args.use_pretrained else args.latent_dim
-		algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
-	elif algo_name == "markov":
-		algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
-	elif algo_name == "louvain":
-		algo = Louvain(graph)
-	elif algo_name == "leiden":
-		algo = Leiden(graph)
-	elif algo_name == "sbm_metropolis":
-		algo = SBM_metropolis(graph, num_clusters=args.num_clusters, iterations=args.iterations)
-	elif algo_name == "sbm_em":
-		algo = SBM_em(graph, num_clusters=args.num_clusters, iterations=args.iterations)
-	elif algo_name == "spectral":
-		algo = Spectral(graph, num_clusters=args.num_clusters)
-	else:
-		raise ValueError("Invalid algorithm")
+	match args.algo.lower():
+		case "gae":
+			latent_dim = default_latent_dim[0] if args.use_pretrained else args.latent_dim
+			algo = GAE(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
+		case "arga":
+			latent_dim = default_latent_dim[1] if args.use_pretrained else args.latent_dim
+			algo = ARGA(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
+		case "mvgrl":
+			latent_dim = default_latent_dim[2] if args.use_pretrained else args.latent_dim
+			algo = MVGRL(graph, num_clusters=args.num_clusters, epochs=args.epochs, lr=args.lr, latent_dim=latent_dim, use_pretrained=args.use_pretrained, save_model=args.save_model)
+		case "markov":
+			algo = Markov(graph, expansion=args.expansion, inflation=args.inflation, iterations=args.iterations)
+		case "louvain":
+			algo = Louvain(graph)
+		case "leiden":
+			algo = Leiden(graph)
+		case "sbm_metropolis":
+			algo = SBM_metropolis(graph, num_clusters=args.num_clusters, iterations=args.iterations)
+		case "sbm_em":
+			algo = SBM_em(graph, num_clusters=args.num_clusters, iterations=args.iterations)
+		case "spectral":
+			algo = Spectral(graph, num_clusters=args.num_clusters)
+		case _:
+			raise ValueError("Invalid algorithm")
 
 	# Running the algorithm
 	print("Running algorithm:", args.algo)
@@ -117,6 +118,6 @@ def main():
 
 if __name__ == "__main__":
 	"""Example usage:
-	$ python main.py --algorithm gae --dataset cora --num_clusters 2 --epochs 100 --lr 0.01 --latent_dim 16 --draw_clusters
+	$ python main.py --algo gae --dataset cora --num_clusters 7 --epochs 50 --lr 0.001 --latent_dim 32 --draw_clusters
 	"""
 	main()

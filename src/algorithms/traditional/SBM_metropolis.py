@@ -34,4 +34,4 @@ class SBM_metropolis(Algorithm):
 		:return: String representation of the algorithm object
 		:rtype: str
 		"""
-		return "SBM algorithm object"
+		return "SBM Metropolis algorithm object"

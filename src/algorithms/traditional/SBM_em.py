@@ -1,20 +1,19 @@
+import sys
 from graph import Graph
 from algorithms.Algorithm import Algorithm
-from .utils import extract_clusters_from_communities_list
 
-import sys
 sys.path.append('../library/')
 import pysbm
 
+
 class SBM_em(Algorithm):
     """Stochastic block model clustering algorithm
-
-    // Installer graph_tools pour l'utiliser
     """
+
     def __init__(self, graph: Graph, num_clusters: int, iterations: int = 10000):
         """Constructor method
         """
-        super(SBM_em, self).__init__(graph, num_clusters, iterations)
+        super(SBM_em, self).__init__(graph)
         self.iterations: int = iterations
         self.num_clusters: int = num_clusters
         self.graph = graph
@@ -22,26 +21,12 @@ class SBM_em(Algorithm):
     def run(self) -> None:
         """Runs the algorithm
         """
-        standard_partition = pysbm.NxPartition(
-            graph=self.graph.nx_graph,
-            number_of_blocks=self.num_clusters
-        )
-
+        standard_partition = pysbm.NxPartition(graph=self.graph.nx_graph, number_of_blocks=self.num_clusters)
         standard_objective_function = pysbm.TraditionalUnnormalizedLogLikelyhood(is_directed=False)
         standard_inference = EMInference(self.graph.nx_graph, standard_objective_function, standard_partition)
         standard_inference.infer_stochastic_block_model()  # Note: No iterations argument here
 
-        partition_dict = standard_partition.partition
-
-        clusters = {}
-        for node, cluster_id in partition_dict.items():
-            if cluster_id not in clusters:
-                clusters[cluster_id] = []
-            clusters[cluster_id].append(node)
-
-        cluster_list = list(clusters.values())
-
-        self.clusters = extract_clusters_from_communities_list(cluster_list)
+        self.clusters = [node[1] for node in sorted(standard_inference.partition.partition.items())]
 
     def __str__(self):
         """Returns the string representation of the algorithm object
@@ -49,7 +34,7 @@ class SBM_em(Algorithm):
         :return: String representation of the algorithm object
         :rtype: str
         """
-        return "SBM algorithm object"
+        return "SBM EM algorithm object"
 
 
 class EMInference(pysbm.Inference):
