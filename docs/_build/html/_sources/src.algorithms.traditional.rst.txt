@@ -28,10 +28,18 @@ src.algorithms.traditional.Markov module
    :undoc-members:
    :show-inheritance:
 
-src.algorithms.traditional.SBM module
--------------------------------------
+src.algorithms.traditional.SBM\_em module
+-----------------------------------------
 
-.. automodule:: src.algorithms.traditional.SBM
+.. automodule:: src.algorithms.traditional.SBM_em
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+src.algorithms.traditional.SBM\_metropolis module
+-------------------------------------------------
+
+.. automodule:: src.algorithms.traditional.SBM_metropolis
    :members:
    :undoc-members:
    :show-inheritance:

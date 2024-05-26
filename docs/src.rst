@@ -1,3 +1,4 @@
+.. _src:
 src package
 ===========
 

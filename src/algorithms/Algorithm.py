@@ -27,14 +27,22 @@ class Algorithm:
 
 	def evaluate(self) -> list[(str, float)]:
 		"""Evaluates the clustering through various supervised (if labels provided in the Graph object) and unsupervised metrics:
+
 		Supervised:
-		- Accuracy
-		- Normalized Mutual Information
-		- Adjusted Rand Index
+
+		* Accuracy
+
+		* Normalized Mutual Information
+
+		* Adjusted Rand Index
+
 		Unsupervised:
-		- Conductance
-		- Silhouette
-		- Modularity
+
+		* Conductance
+
+		* Silhouette
+
+		* Modularity
 		"""
 		metrics: list[(str, float)] = []
 		if self.graph.labels is not None:

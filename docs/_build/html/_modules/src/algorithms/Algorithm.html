@@ -41,8 +41,13 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../implemented_techniques.html">Implemented Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">src</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -104,14 +109,22 @@
 <a class="viewcode-back" href="../../../src.algorithms.html#src.algorithms.Algorithm.Algorithm.evaluate">[docs]</a>
 	<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">)]:</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Evaluates the clustering through various supervised (if labels provided in the Graph object) and unsupervised metrics:</span>
+
 <span class="sd">		Supervised:</span>
-<span class="sd">		- Accuracy</span>
-<span class="sd">		- Normalized Mutual Information</span>
-<span class="sd">		- Adjusted Rand Index</span>
+
+<span class="sd">		* Accuracy</span>
+
+<span class="sd">		* Normalized Mutual Information</span>
+
+<span class="sd">		* Adjusted Rand Index</span>
+
 <span class="sd">		Unsupervised:</span>
-<span class="sd">		- Conductance</span>
-<span class="sd">		- Silhouette</span>
-<span class="sd">		- Modularity</span>
+
+<span class="sd">		* Conductance</span>
+
+<span class="sd">		* Silhouette</span>
+
+<span class="sd">		* Modularity</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">metrics</span><span class="p">:</span> <span class="nb">list</span><span class="p">[(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
