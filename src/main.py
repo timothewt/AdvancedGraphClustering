@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 import numpy as np
 
 from graph import Graph
-from algorithms import GAE, ARGA, MVGRL, Markov, Louvain, Leiden, SBM, Spectral
+from algorithms import GAE, ARGA, MVGRL, Markov, Louvain, Leiden, SBM_em, SBM_metropolis, Spectral
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 	# Algorithm
-	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use (gae, arga, mvgrl, markov, louvain, leiden, sbm, spectral)")
+	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use (gae, arga, mvgrl, markov, louvain, leiden, sbm_em, sbm_metropolis, spectral)")
 
 	# Dataset
 	parser.add_argument("--dataset", type=str, help="Dataset to use (karateclub, cora, citeseer, uat). If not provided, use custom dataset")
@@ -80,8 +80,10 @@ def main():
 		algo = Louvain(graph)
 	elif algo_name == "leiden":
 		algo = Leiden(graph)
-	elif algo_name == "sbm":
-		algo = SBM(graph, num_clusters=args.num_clusters, iterations=args.iterations)
+	elif algo_name == "sbm_metropolis":
+		algo = SBM_metropolis(graph, num_clusters=args.num_clusters, iterations=args.iterations)
+	elif algo_name == "sbm_em":
+		algo = SBM_em(graph, num_clusters=args.num_clusters, iterations=args.iterations)
 	elif algo_name == "spectral":
 		algo = Spectral(graph, num_clusters=args.num_clusters)
 	else:

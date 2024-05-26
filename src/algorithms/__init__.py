@@ -5,4 +5,5 @@ from .traditional.Markov import Markov
 from .traditional.Louvain import Louvain
 from .traditional.Leiden import Leiden
 from .traditional.Spectral import Spectral
-from .traditional.SBM import SBM
+from .traditional.SBM_em import SBM_em
+from .traditional.SBM_metropolis import SBM_metropolis

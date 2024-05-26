@@ -6,14 +6,14 @@ sys.path.append('..\\library\\')
 import pysbm
 
 
-class SBM(Algorithm):
+class SBM_metropolis(Algorithm):
 	"""Stochastic block model clustering algorithm
 	"""
 
 	def __init__(self, graph: Graph, num_clusters: int, iterations: int = 10000):
 		"""Constructor method
 		"""
-		super(SBM, self).__init__(graph)
+		super(SBM_metropolis, self).__init__(graph)
 		self.iterations: int = iterations
 		self.num_clusters: int = num_clusters
 		self.graph = graph
