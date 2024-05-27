@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 import numpy as np
 
 from graph import Graph
-from algorithms import GAE, ARGA, MVGRL, Markov, Louvain, Leiden, SBM_em, SBM_metropolis, Spectral
+from algorithms import GAE, ARGA, MVGRL, Markov, Louvain, Leiden, SBM_em, SBM_metropolis, Spectral, DCSBM
 
 
 def main():
@@ -85,6 +85,8 @@ def main():
 			algo = SBM_metropolis(graph, num_clusters=args.num_clusters, iterations=args.iterations)
 		case "sbm_em":
 			algo = SBM_em(graph, num_clusters=args.num_clusters, iterations=args.iterations)
+		case "dcsbm":
+			algo = DCSBM(graph, num_clusters=args.num_clusters, iterations=args.iterations)
 		case "spectral":
 			algo = Spectral(graph, num_clusters=args.num_clusters)
 		case _:

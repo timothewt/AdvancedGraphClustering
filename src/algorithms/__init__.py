@@ -7,3 +7,4 @@ from .traditional.Leiden import Leiden
 from .traditional.Spectral import Spectral
 from .traditional.SBM_em import SBM_em
 from .traditional.SBM_metropolis import SBM_metropolis
+from .traditional.DCSBM import DCSBM
