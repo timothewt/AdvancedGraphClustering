@@ -14,7 +14,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Graph Embedding Algorithms", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 	# Algorithm
-	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use (gae, arga, mvgrl, markov, louvain, leiden, sbm_em, sbm_metropolis, spectral)")
+	parser.add_argument("--algo", type=str, default="gae", help="Algorithm to use (gae, arga, mvgrl, markov, louvain, leiden, dcsbm, sbm_em, sbm_metropolis, spectral)")
 
 	# Dataset
 	parser.add_argument("--dataset", type=str, help="Dataset to use (karateclub, cora, citeseer, uat). If not provided, use custom dataset")
