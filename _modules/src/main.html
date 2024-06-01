@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.main &mdash; Advanced Graph Clustering 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Advanced Graph Clustering
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../implemented_techniques.html">Implemented Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Advanced Graph Clustering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.main</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">prettytable</span> <span class="kn">import</span> <span class="n">PrettyTable</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">graph</span> <span class="kn">import</span> <span class="n">Graph</span>
+<span class="kn">from</span> <span class="nn">algorithms</span> <span class="kn">import</span> <span class="n">GAE</span><span class="p">,</span> <span class="n">ARGA</span><span class="p">,</span> <span class="n">MVGRL</span><span class="p">,</span> <span class="n">Markov</span><span class="p">,</span> <span class="n">Louvain</span><span class="p">,</span> <span class="n">Leiden</span><span class="p">,</span> <span class="n">SBM_em</span><span class="p">,</span> <span class="n">SBM_metropolis</span><span class="p">,</span> <span class="n">Spectral</span><span class="p">,</span> <span class="n">DCSBM</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../src.html#src.main.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Main function</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Graph Embedding Algorithms&quot;</span><span class="p">,</span> <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentDefaultsHelpFormatter</span><span class="p">)</span>
+
+	<span class="c1"># Algorithm</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--algo&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;gae&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Algorithm to use (gae, arga, mvgrl, markov, louvain, leiden, dcsbm, sbm_em, sbm_metropolis, spectral)&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Dataset</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--dataset&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Dataset to use (karateclub, cora, citeseer, uat). If not provided, use custom dataset&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Custom Dataset</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--adj&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Graph adjacency matrix as .csv (no header and index)&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--features&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Graph features matrix as .csv (no header and index)&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--labels&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Graph labels matrix as .csv (no header and index)&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Markov clustering parameters</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--expansion&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Expand parameter for Markov&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--inflation&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Inflation parameter for Markov &quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--iterations&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of iterations for Markov and SBM&quot;</span><span class="p">)</span>
+
+	<span class="c1"># For Deep, Spectral and SBM</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--num_clusters&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of clusters for Spectral clustering and Deep Graph Clustering&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Deep parameters</span>
+	<span class="n">default_latent_dim</span> <span class="o">=</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">128</span><span class="p">]</span>  <span class="c1"># Default latent dimensions for GAE, ARGA, and MVGRL</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--epochs&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of epochs for Deep Graph Clustering&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--lr&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Learning rate for Deep Graph Clustering&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--latent_dim&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default_latent_dim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Latent dimension for Deep Graph Clustering&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--use_pretrained&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use a pretrained model for Deep Graph Clustering&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--save_model&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Save the model after training if use_pretrained is not specified&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Output</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--output_path&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;../output&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output path to save the results&quot;</span><span class="p">)</span>
+	<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--draw_clusters&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Draw clusters after clustering&quot;</span><span class="p">)</span>
+
+	<span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+	<span class="c1"># Loading the dataset</span>
+	<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">:</span>
+		<span class="k">assert</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;karateclub&quot;</span><span class="p">,</span> <span class="s2">&quot;cora&quot;</span><span class="p">,</span> <span class="s2">&quot;citeseer&quot;</span><span class="p">,</span> <span class="s2">&quot;uat&quot;</span><span class="p">],</span> <span class="s2">&quot;Invalid dataset&quot;</span>
+		<span class="n">adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;../data/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/adj.npy&quot;</span><span class="p">)</span>
+		<span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;../data/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/feat.npy&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+		<span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;../data/</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">/label.npy&quot;</span><span class="p">)</span>
+		<span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">adj_matrix</span><span class="o">=</span><span class="n">adj</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">dataset_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">assert</span> <span class="n">args</span><span class="o">.</span><span class="n">adj</span><span class="p">,</span> <span class="s2">&quot;Adjacency matrix is required when dataset is not provided&quot;</span>
+		<span class="n">adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">adj</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+		<span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">features</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">features</span> <span class="k">else</span> <span class="kc">None</span>
+		<span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">labels</span> <span class="k">else</span> <span class="kc">None</span>
+		<span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">adj_matrix</span><span class="o">=</span><span class="n">adj</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+
+	<span class="c1"># Ensuring that the pretrained folder exists</span>
+	<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">save_model</span><span class="p">:</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;algorithms/deep/pretrained&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;algorithms/deep/pretrained&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+	<span class="c1"># Instantiating the algorithm</span>
+	<span class="k">match</span> <span class="n">args</span><span class="o">.</span><span class="n">algo</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+		<span class="k">case</span> <span class="s2">&quot;gae&quot;</span><span class="p">:</span>
+			<span class="n">latent_dim</span> <span class="o">=</span> <span class="n">default_latent_dim</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">latent_dim</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">GAE</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">latent_dim</span><span class="o">=</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">use_pretrained</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span><span class="p">,</span> <span class="n">save_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">save_model</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;arga&quot;</span><span class="p">:</span>
+			<span class="n">latent_dim</span> <span class="o">=</span> <span class="n">default_latent_dim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">latent_dim</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">ARGA</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">latent_dim</span><span class="o">=</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">use_pretrained</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span><span class="p">,</span> <span class="n">save_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">save_model</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;mvgrl&quot;</span><span class="p">:</span>
+			<span class="n">latent_dim</span> <span class="o">=</span> <span class="n">default_latent_dim</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">latent_dim</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">MVGRL</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">latent_dim</span><span class="o">=</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">use_pretrained</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">use_pretrained</span><span class="p">,</span> <span class="n">save_model</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">save_model</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;markov&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">Markov</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">expansion</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">expansion</span><span class="p">,</span> <span class="n">inflation</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">inflation</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;louvain&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">Louvain</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;leiden&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">Leiden</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;sbm_metropolis&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">SBM_metropolis</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;sbm_em&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">SBM_em</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;dcsbm&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">DCSBM</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span>
+		<span class="k">case</span> <span class="s2">&quot;spectral&quot;</span><span class="p">:</span>
+			<span class="n">algo</span> <span class="o">=</span> <span class="n">Spectral</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">num_clusters</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">num_clusters</span><span class="p">)</span>
+		<span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid algorithm&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Running the algorithm</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running algorithm:&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">algo</span><span class="p">)</span>
+	<span class="n">algo</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Evaluating the clustering</span>
+	<span class="n">evaluation</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evaluate</span><span class="p">()</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Evaluation:&quot;</span><span class="p">)</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">([</span><span class="s2">&quot;Metric&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">])</span>
+	<span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">evaluation</span><span class="p">:</span>
+		<span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">([</span><span class="n">metric</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+	<span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+	<span class="c1"># Saving the resulting clustering</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_path</span><span class="p">):</span>
+		<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_path</span><span class="p">)</span>
+	<span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">ds</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ds</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}{</span><span class="n">args</span><span class="o">.</span><span class="n">algo</span><span class="si">}</span><span class="s2">_clusters.csv&quot;</span><span class="p">)</span>
+	<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving the resulting clustering to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+	<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="nb">range</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">adj_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">algo</span><span class="o">.</span><span class="n">clusters</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,)</span>
+
+	<span class="c1"># Optionally, draw the clusters</span>
+	<span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">draw_clusters</span><span class="p">:</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Drawing clusters...&quot;</span><span class="p">)</span>
+		<span class="n">graph</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">clusters</span><span class="o">=</span><span class="n">algo</span><span class="o">.</span><span class="n">clusters</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Example usage:</span>
+<span class="sd">	$ python main.py --algo gae --dataset cora --num_clusters 7 --epochs 50 --lr 0.001 --latent_dim 32 --draw_clusters</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Timothe Watteau, Joaquim Jusseau, Aubin Bonnefoy, Simon Illouz-Laurent.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

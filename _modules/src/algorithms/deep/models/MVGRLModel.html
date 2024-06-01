@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.algorithms.deep.models.MVGRLModel &mdash; Advanced Graph Clustering 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=2709fde1"></script>
+        <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Advanced Graph Clustering
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../implemented_techniques.html">Implemented Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Advanced Graph Clustering</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.algorithms.deep.models.MVGRLModel</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.algorithms.deep.models.MVGRLModel</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Adapted from https://github.com/kavehhassani/mvgrl/blob/master/node/train.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
+<span class="kn">from</span> <span class="nn">torch_geometric.nn</span> <span class="kn">import</span> <span class="n">GCNConv</span>
+
+
+<div class="viewcode-block" id="GCN">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.GCN">[docs]</a>
+<span class="k">class</span> <span class="nc">GCN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Graph Convolutional Network (GCN) with as single layer</span>
+
+<span class="sd">	:param in_channels: Number of input features</span>
+<span class="sd">	:type in_channels: int</span>
+<span class="sd">	:param out_channels: Number of output features</span>
+<span class="sd">	:type out_channels: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">GCN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">:</span> <span class="n">GCNConv</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">prelu1</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">PReLU</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">PReLU</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">:</span> <span class="n">GCNConv</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">prelu2</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">PReLU</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">PReLU</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GCN.forward">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.GCN.forward">[docs]</a>
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">edge_weight</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">:</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;Forward pass</span>
+
+<span class="sd">		:param x: Input features</span>
+<span class="sd">		:type x: torch.tensor</span>
+<span class="sd">		:param edge_index: Edge index tensor</span>
+<span class="sd">		:type edge_index: torch.tensor</span>
+<span class="sd">		:param edge_weight: Edge weight tensor (if any)</span>
+<span class="sd">		:type edge_weight: torch.tensor</span>
+<span class="sd">		:return: Embeddings of the nodes at each GCN layer</span>
+<span class="sd">		:rtype: torch.tensor</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">h1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prelu1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_weight</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">h1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prelu2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_weight</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Projection">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.Projection">[docs]</a>
+<span class="k">class</span> <span class="nc">Projection</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Projection layer</span>
+
+<span class="sd">	:param latent_dim: Dimension of the latent space</span>
+<span class="sd">	:type latent_dim: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">Projection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latent_dim</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">prelu</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">PReLU</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">PReLU</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Projection.forward">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.Projection.forward">[docs]</a>
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">:</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;Forward pass</span>
+
+<span class="sd">		:param h: Node embeddings</span>
+<span class="sd">		:type h: torch.tensor</span>
+<span class="sd">		:return: Projected embeddings</span>
+<span class="sd">		:rtype: torch.tensor</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">h</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Readout">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.Readout">[docs]</a>
+<span class="k">class</span> <span class="nc">Readout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Readout function for a one-layer GCN model</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">Readout</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latent_dim</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Readout.forward">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.Readout.forward">[docs]</a>
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h1</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">h2</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">:</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;Pooling layer</span>
+
+<span class="sd">		:param h: Node embeddings at the first GCN layer</span>
+<span class="sd">		:type h: torch.tensor</span>
+<span class="sd">		:return: Pooled embeddings</span>
+<span class="sd">		:rtype: torch.tensor</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">h1</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">),</span> <span class="n">h2</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Discriminator">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.Discriminator">[docs]</a>
+<span class="k">class</span> <span class="nc">Discriminator</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Discriminator module</span>
+
+<span class="sd">	:param in_channels: Number of features in the hidden GCN layers</span>
+<span class="sd">	:type in_channels: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">Discriminator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">bilinear</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Bilinear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Bilinear</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Discriminator.forward">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.Discriminator.forward">[docs]</a>
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ha</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">hb</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">Ha</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">Hb</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">Ha_corrupted</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">Hb_corrupted</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">:</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot; Forward pass of the discriminator computer the MI between the two representations of the views</span>
+
+<span class="sd">		:param ha: Graph embedding of the original view</span>
+<span class="sd">		:type ha: torch.tensor</span>
+<span class="sd">		:param hb: Graph embedding of the diffused view</span>
+<span class="sd">		:type hb: torch.tensor</span>
+<span class="sd">		:param Ha: Node embedding of the original view</span>
+<span class="sd">		:type Ha: torch.tensor</span>
+<span class="sd">		:param Hb: Node embedding of the diffused view</span>
+<span class="sd">		:type Hb: torch.tensor</span>
+<span class="sd">		:param Ha_corrupted: Node embedding of the corrupted original view</span>
+<span class="sd">		:type Ha_corrupted: torch.tensor</span>
+<span class="sd">		:param Hb_corrupted: Node embedding of the corrupted diffused view</span>
+<span class="sd">		:type Hb_corrupted: torch.tensor</span>
+<span class="sd">		:return: Discriminator output</span>
+<span class="sd">		:rtype: torch.tensor</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">ha</span> <span class="o">=</span> <span class="n">ha</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">Ha</span><span class="p">)</span>
+		<span class="n">hb</span> <span class="o">=</span> <span class="n">hb</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">Hb</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+			<span class="p">[</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">bilinear</span><span class="p">(</span><span class="n">hb</span><span class="p">,</span> <span class="n">Ha</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">bilinear</span><span class="p">(</span><span class="n">ha</span><span class="p">,</span> <span class="n">Hb</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">bilinear</span><span class="p">(</span><span class="n">hb</span><span class="p">,</span> <span class="n">Ha_corrupted</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(),</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">bilinear</span><span class="p">(</span><span class="n">ha</span><span class="p">,</span> <span class="n">Hb_corrupted</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+			<span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span>
+		<span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MVGRLModel">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.MVGRLModel">[docs]</a>
+<span class="k">class</span> <span class="nc">MVGRLModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Multi-View Graph Representation Learning (MVGRL) model</span>
+
+<span class="sd">	:param in_channels: Number of input features</span>
+<span class="sd">	:type in_channels: int</span>
+<span class="sd">	:param latent_dim: Dimension of the latent space</span>
+<span class="sd">	:type latent_dim: int</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+		<span class="nb">super</span><span class="p">(</span><span class="n">MVGRLModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gcn_real</span><span class="p">:</span> <span class="n">GCN</span> <span class="o">=</span> <span class="n">GCN</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">gcn_diff</span><span class="p">:</span> <span class="n">GCN</span> <span class="o">=</span> <span class="n">GCN</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">latent_dim</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">readout</span><span class="p">:</span> <span class="n">Readout</span> <span class="o">=</span> <span class="n">Readout</span><span class="p">(</span><span class="n">latent_dim</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">:</span> <span class="n">Projection</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>  <span class="c1"># Projection(latent_dim)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">projector_graph</span><span class="p">:</span> <span class="n">Projection</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>  <span class="c1"># Projection(latent_dim)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">discriminator</span><span class="p">:</span> <span class="n">Discriminator</span> <span class="o">=</span> <span class="n">Discriminator</span><span class="p">(</span><span class="n">latent_dim</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MVGRLModel.forward">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.MVGRLModel.forward">[docs]</a>
+	<span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">diff_edge_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">diff_edge_weight</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">corrupted_idx</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;Forward pass, a=alpha (original view), b=beta (diffused view)</span>
+
+<span class="sd">		:param x: Input features</span>
+<span class="sd">		:type x: torch.tensor</span>
+<span class="sd">		:param edge_index: Edge index tensor</span>
+<span class="sd">		:type edge_index: torch.tensor</span>
+<span class="sd">		:param diff_edge_index: Diffused edge index tensor</span>
+<span class="sd">		:type diff_edge_index: torch.tensor</span>
+<span class="sd">		:param diff_edge_weight: Diffused edge weight tensor</span>
+<span class="sd">		:type diff_edge_weight: torch.tensor</span>
+<span class="sd">		:param corrupted_idx: Corrupted index tensor</span>
+<span class="sd">		:type corrupted_idx: torch.tensor</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="c1"># Graph and node embeddings</span>
+		<span class="n">ha1</span><span class="p">,</span> <span class="n">ha2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcn_real</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+		<span class="n">hb1</span><span class="p">,</span> <span class="n">hb2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcn_diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">diff_edge_index</span><span class="p">,</span> <span class="n">diff_edge_weight</span><span class="p">)</span>
+		<span class="n">Ha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">(</span><span class="n">ha2</span><span class="p">)</span>
+		<span class="n">Hb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">(</span><span class="n">hb2</span><span class="p">)</span>
+		<span class="n">ha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readout</span><span class="p">(</span><span class="n">ha1</span><span class="p">,</span> <span class="n">ha2</span><span class="p">))</span>
+		<span class="n">hb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readout</span><span class="p">(</span><span class="n">hb1</span><span class="p">,</span> <span class="n">hb2</span><span class="p">))</span>
+		<span class="c1"># Corrupted features embeddings</span>
+		<span class="k">if</span> <span class="n">corrupted_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">corrupted_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+		<span class="n">_</span><span class="p">,</span> <span class="n">ha2_corrupted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcn_real</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">corrupted_idx</span><span class="p">],</span> <span class="n">edge_index</span><span class="p">)</span>
+		<span class="n">_</span><span class="p">,</span> <span class="n">hb2_corrupted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcn_diff</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">corrupted_idx</span><span class="p">],</span> <span class="n">diff_edge_index</span><span class="p">,</span> <span class="n">diff_edge_weight</span><span class="p">)</span>
+		<span class="n">Ha_corrupted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">(</span><span class="n">ha2_corrupted</span><span class="p">)</span>
+		<span class="n">Hb_corrupted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">(</span><span class="n">hb2_corrupted</span><span class="p">)</span>
+		<span class="c1"># Discriminator output</span>
+		<span class="n">disc_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">discriminator</span><span class="p">(</span><span class="n">ha</span><span class="p">,</span> <span class="n">hb</span><span class="p">,</span> <span class="n">Ha</span><span class="p">,</span> <span class="n">Hb</span><span class="p">,</span> <span class="n">Ha_corrupted</span><span class="p">,</span> <span class="n">Hb_corrupted</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">disc_out</span><span class="p">,</span> <span class="n">ha</span> <span class="o">+</span> <span class="n">hb</span><span class="p">,</span> <span class="n">Ha</span> <span class="o">+</span> <span class="n">Hb</span></div>
+
+
+<div class="viewcode-block" id="MVGRLModel.encode">
+<a class="viewcode-back" href="../../../../../src.algorithms.deep.models.html#src.algorithms.deep.models.MVGRLModel.MVGRLModel.encode">[docs]</a>
+	<span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">diff_edge_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">diff_edge_weight</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">:</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;Embedding function</span>
+
+<span class="sd">		:param x: Input features</span>
+<span class="sd">		:type x: torch.tensor</span>
+<span class="sd">		:param edge_index: Edge index tensor</span>
+<span class="sd">		:type edge_index: torch.tensor</span>
+<span class="sd">		:param diff_edge_index: Diffused edge index tensor</span>
+<span class="sd">		:type diff_edge_index: torch.tensor</span>
+<span class="sd">		:param diff_edge_weight: Diffused edge weight tensor</span>
+<span class="sd">		:type diff_edge_weight: torch.tensor</span>
+<span class="sd">		:return: Node embeddings</span>
+<span class="sd">		:rtype: torch.tensor</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">_</span><span class="p">,</span> <span class="n">ha2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcn_real</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+		<span class="n">_</span><span class="p">,</span> <span class="n">hb2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcn_diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">diff_edge_index</span><span class="p">,</span> <span class="n">diff_edge_weight</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">(</span><span class="n">ha2</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector_nodes</span><span class="p">(</span><span class="n">hb2</span><span class="p">)</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Timothe Watteau, Joaquim Jusseau, Aubin Bonnefoy, Simon Illouz-Laurent.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
